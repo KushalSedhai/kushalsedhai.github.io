@@ -1,1249 +1,953 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Kushal Sedhai — Junior Embedded Firmware Engineer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:     #060810;
-  --bg1:    #090c14;
-  --bg2:    #0c1018;
-  --bg3:    #101520;
-  --green:  #00ffa3;
-  --blue:   #00cfff;
-  --orange: #ff6b35;
-  --dim:    rgba(0,255,163,0.07);
-  --border: rgba(0,255,163,0.12);
-  --text:   #c8ddd6;
-  --muted:  #4a6860;
-  --mono:   'JetBrains Mono', monospace;
-  --syne:   'Syne', sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--syne);
-  overflow-x:hidden;
-  cursor:none;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kushal Sedhai | Junior Embedded Firmware Engineer</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --accent: #0f172a;
+      --accent-2: #1e293b;
+      --chip: #eef2ff;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      --radius: 18px;
+      --maxw: 1150px;
+    }
 
-/* ── CUSTOM CURSOR ── */
-#cursor{
-  position:fixed;width:10px;height:10px;
-  border:1.5px solid var(--green);border-radius:50%;
-  pointer-events:none;z-index:9999;
-  transform:translate(-50%,-50%);
-  transition:width .15s,height .15s,background .15s;
-}
-#cursor-ring{
-  position:fixed;width:36px;height:36px;
-  border:1px solid rgba(0,255,163,0.3);border-radius:50%;
-  pointer-events:none;z-index:9998;
-  transform:translate(-50%,-50%);
-  transition:transform .08s linear,width .2s,height .2s;
-}
-body:has(a:hover) #cursor,body:has(button:hover) #cursor{
-  width:20px;height:20px;background:rgba(0,255,163,0.2);
-}
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
 
-/* ── PCB GRID BG ── */
-.pcb-bg{
-  position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(0,255,163,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,163,0.03) 1px,transparent 1px);
-  background-size:48px 48px;
-}
-/* animated trace lines */
-.trace-h,.trace-v{position:fixed;pointer-events:none;z-index:0}
-.trace-h{height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:0;animation:traceH 12s linear infinite}
-.trace-v{width:1px;background:linear-gradient(transparent,var(--green),transparent);opacity:0;animation:traceV 16s linear infinite}
-@keyframes traceH{0%{left:-100%;width:30%;opacity:0}20%{opacity:.4}80%{opacity:.4}100%{left:170%;opacity:0}}
-@keyframes traceV{0%{top:-100%;height:25%;opacity:0}20%{opacity:.3}80%{opacity:.3}100%{top:160%;opacity:0}}
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
 
-/* ── NAV ── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  height:60px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 48px;
-  border-bottom:1px solid var(--border);
-  background:rgba(6,8,16,0.8);
-  backdrop-filter:blur(16px);
-}
-.nav-id{
-  font-family:var(--mono);font-size:13px;
-  color:var(--green);letter-spacing:.05em;
-  text-decoration:none;
-}
-.nav-id span{color:var(--muted)}
-.nav-links{display:flex;gap:36px;list-style:none}
-.nav-links a{
-  font-family:var(--mono);font-size:11px;
-  color:var(--muted);text-decoration:none;
-  letter-spacing:.15em;text-transform:uppercase;
-  transition:color .2s;
-  position:relative;
-}
-.nav-links a::after{
-  content:'';position:absolute;bottom:-4px;left:0;
-  width:0;height:1px;background:var(--green);
-  transition:width .3s;
-}
-.nav-links a:hover{color:var(--green)}
-.nav-links a:hover::after{width:100%}
-.nav-status{
-  font-family:var(--mono);font-size:10px;
-  color:var(--muted);display:flex;align-items:center;gap:8px;
-}
-.status-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--green);
-  animation:pulse 2s ease-in-out infinite;
-}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,163,.4)}50%{opacity:.7;box-shadow:0 0 0 6px rgba(0,255,163,0)}}
+    .container {
+      width: min(var(--maxw), calc(100% - 32px));
+      margin: 0 auto;
+    }
 
-/* ── HERO ── */
-.hero{
-  position:relative;z-index:2;
-  min-height:100vh;
-  display:grid;
-  grid-template-columns:1fr 420px;
-  gap:0;
-  align-items:center;
-  padding:80px 48px 48px;
-  max-width:1300px;
-  margin:0 auto;
-}
-.hero-left{}
-.hero-eyebrow{
-  font-family:var(--mono);font-size:11px;
-  color:var(--muted);letter-spacing:.2em;text-transform:uppercase;
-  margin-bottom:28px;
-  display:flex;align-items:center;gap:12px;
-  opacity:0;animation:fadeUp .6s .2s forwards;
-}
-.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--green)}
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
 
-.hero-name{
-  font-family:var(--syne);font-weight:800;
-  font-size:clamp(52px,8vw,96px);
-  line-height:.95;
-  color:#fff;
-  letter-spacing:-.02em;
-  margin-bottom:16px;
-  opacity:0;animation:fadeUp .6s .35s forwards;
-}
-.hero-name .last{
-  color:transparent;
-  -webkit-text-stroke:1.5px rgba(0,255,163,0.5);
-}
+    .nav-wrap {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      flex-wrap: wrap;
+    }
 
-.hero-role{
-  font-family:var(--mono);font-size:16px;
-  color:var(--green);margin-bottom:32px;
-  min-height:24px;
-  opacity:0;animation:fadeUp .6s .5s forwards;
-}
+    .brand h1 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
 
-.hero-bio{
-  font-size:15px;line-height:1.8;
-  color:var(--muted);
-  max-width:520px;
-  margin-bottom:40px;
-  border-left:2px solid var(--border);
-  padding-left:20px;
-  opacity:0;animation:fadeUp .6s .65s forwards;
-}
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
 
-.hero-chips{
-  display:flex;flex-wrap:wrap;gap:10px;
-  margin-bottom:40px;
-  opacity:0;animation:fadeUp .6s .8s forwards;
-}
-.chip{
-  font-family:var(--mono);font-size:10px;
-  padding:6px 14px;
-  border:1px solid var(--border);
-  color:var(--muted);
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  transition:all .2s;
-}
-.chip:hover{border-color:var(--green);color:var(--green);background:rgba(0,255,163,.05)}
-.chip.active{border-color:rgba(0,255,163,.4);color:var(--green)}
+    nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-.hero-btns{
-  display:flex;gap:14px;flex-wrap:wrap;
-  opacity:0;animation:fadeUp .6s .95s forwards;
-}
-.btn{
-  display:inline-flex;align-items:center;gap:10px;
-  padding:13px 28px;
-  font-family:var(--mono);font-size:11px;
-  letter-spacing:.12em;text-transform:uppercase;
-  text-decoration:none;border:none;cursor:none;
-  transition:all .25s;
-}
-.btn-green{background:var(--green);color:#000}
-.btn-green:hover{background:#fff;box-shadow:0 0 40px rgba(0,255,163,.35)}
-.btn-ghost{background:transparent;color:var(--green);border:1px solid var(--border)}
-.btn-ghost:hover{border-color:var(--green);background:rgba(0,255,163,.05)}
+    nav a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--muted);
+      transition: 0.2s ease;
+    }
 
-/* ── HERO RIGHT — PERSONA ── */
-.hero-right{
-  position:relative;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;animation:fadeUp .8s 1.1s forwards;
-}
-.persona-wrap{
-  position:relative;
-  width:360px;height:460px;
-}
-/* outer ring */
-.persona-ring{
-  position:absolute;inset:-30px;
-  border:1px solid var(--border);
-  border-radius:4px;
-  animation:ringRotate 30s linear infinite;
-}
-.persona-ring::before{
-  content:'';position:absolute;
-  top:-4px;left:50%;transform:translateX(-50%);
-  width:8px;height:8px;
-  background:var(--green);border-radius:50%;
-}
-@keyframes ringRotate{to{transform:rotate(360deg)}}
+    nav a:hover,
+    nav a.active {
+      background: var(--accent);
+      color: white;
+    }
 
-/* photo frame */
-.persona-photo{
-  position:absolute;
-  inset:0;
-  border:1px solid rgba(0,255,163,.2);
-  overflow:hidden;
-  background:var(--bg2);
-}
-.persona-photo img{
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:top center;
-  display:block;
-}
-.photo-placeholder{
-  width:100%;height:100%;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:16px;
-  background:var(--bg2);
-}
-.photo-placeholder svg{opacity:.2}
-.photo-placeholder span{
-  font-family:var(--mono);font-size:11px;
-  color:var(--muted);letter-spacing:.12em;
-  text-align:center;line-height:1.6;
-}
+    .page { display: none; padding: 48px 0 70px; }
+    .page.active { display: block; }
 
-/* floating chips on photo */
-.float-chip{
-  position:absolute;
-  background:rgba(6,8,16,.9);
-  border:1px solid var(--border);
-  padding:8px 14px;
-  font-family:var(--mono);font-size:10px;
-  color:var(--green);letter-spacing:.1em;
-  backdrop-filter:blur(8px);
-  animation:floatChip 4s ease-in-out infinite;
-}
-.float-chip.fc1{bottom:-16px;left:-24px;animation-delay:0s}
-.float-chip.fc2{top:20px;right:-28px;animation-delay:1.5s}
-.float-chip.fc3{bottom:60px;right:-20px;animation-delay:3s}
-@keyframes floatChip{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
-}
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 28px;
+      align-items: center;
+    }
 
-/* corner decorations */
-.corner{position:absolute;width:16px;height:16px}
-.corner::before,.corner::after{content:'';position:absolute;background:var(--green)}
-.corner::before{width:100%;height:1.5px;top:0;left:0}
-.corner::after{width:1.5px;height:100%;top:0;left:0}
-.corner.tr{top:-2px;right:-2px;transform:rotate(90deg)}
-.corner.bl{bottom:-2px;left:-2px;transform:rotate(270deg)}
-.corner.br{bottom:-2px;right:-2px;transform:rotate(180deg)}
-.corner.tl{top:-2px;left:-2px}
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
 
-/* ── TERMINAL SECTION ── */
-.terminal-section{
-  position:relative;z-index:2;
-  max-width:1300px;margin:0 auto;
-  padding:0 48px 80px;
-}
-.terminal{
-  background:var(--bg1);
-  border:1px solid var(--border);
-  max-width:720px;
-}
-.term-bar{
-  background:var(--bg3);
-  border-bottom:1px solid var(--border);
-  padding:10px 16px;
-  display:flex;align-items:center;gap:8px;
-}
-.term-dot{width:10px;height:10px;border-radius:50%}
-.term-dot.r{background:#ff5f56}.term-dot.y{background:#ffbd2e}.term-dot.g{background:#27c93f}
-.term-title{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px;letter-spacing:.1em}
-.term-body{padding:24px 28px;min-height:200px}
-.term-line{
-  font-family:var(--mono);font-size:13px;
-  line-height:1.8;
-  display:block;
-  opacity:0;
-  white-space:pre;
-}
-.term-line.shown{opacity:1}
-.term-prompt{color:var(--green)}
-.term-cmd{color:#fff}
-.term-out{color:var(--muted)}
-.term-out.hi{color:var(--blue)}
-.term-out.warn{color:var(--orange)}
-.term-cursor{
-  display:inline-block;width:8px;height:14px;
-  background:var(--green);
-  animation:blink .9s step-end infinite;
-  vertical-align:text-bottom;
-}
-@keyframes blink{50%{opacity:0}}
+    .card.pad { padding: 24px; }
+    .card.pad-lg { padding: 30px; }
 
-/* ── SECTION SHARED ── */
-.section{
-  position:relative;z-index:2;
-  max-width:1300px;margin:0 auto;
-  padding:80px 48px;
-}
-.sec-head{
-  display:flex;align-items:baseline;gap:18px;
-  margin-bottom:56px;
-}
-.sec-num{font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:.2em}
-.sec-title{
-  font-family:var(--syne);font-size:42px;font-weight:800;
-  text-transform:uppercase;letter-spacing:-.01em;color:#fff;
-}
-.sec-line{flex:1;height:1px;background:var(--border);margin-left:12px}
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+    }
 
-/* ── SKILLS ── */
-.skills-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:2px;
-}
-.skill-card{
-  background:var(--bg1);
-  border:1px solid var(--border);
-  padding:32px;
-  position:relative;overflow:hidden;
-  transition:border-color .3s,transform .3s;
-}
-.skill-card::after{
-  content:'';
-  position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,255,163,.04),transparent);
-  opacity:0;transition:opacity .3s;
-}
-.skill-card:hover{border-color:rgba(0,255,163,.35);transform:translateY(-3px)}
-.skill-card:hover::after{opacity:1}
-.sk-num{font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:.15em;margin-bottom:14px}
-.sk-title{font-family:var(--syne);font-size:20px;font-weight:700;text-transform:uppercase;color:#fff;margin-bottom:10px}
-.sk-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px}
-.sk-tags{display:flex;flex-wrap:wrap;gap:6px}
-.stag{
-  font-family:var(--mono);font-size:9px;
-  padding:4px 10px;border:1px solid var(--border);
-  color:var(--muted);letter-spacing:.08em;
-  transition:all .2s;
-}
-.stag.lit{border-color:rgba(0,255,163,.35);color:var(--green)}
-/* skill bar */
-.sk-bar-wrap{
-  width:100%;height:2px;background:rgba(255,255,255,.05);
-  margin:14px 0 4px;
-}
-.sk-bar{height:100%;background:var(--green);width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
-.sk-bar-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--muted)}
+    h1, h2, h3, h4 { line-height: 1.2; }
+    .hero-title {
+      font-size: clamp(2.4rem, 5vw, 4.3rem);
+      margin: 0;
+    }
 
-/* ── PROJECTS ── */
-.projects-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
-  gap:3px;
-}
-.proj-card{
-  background:var(--bg1);
-  border:1px solid var(--border);
-  text-decoration:none;color:inherit;
-  display:block;position:relative;
-  overflow:hidden;
-  transition:border-color .3s;
-}
-.proj-card::before{
-  content:'';
-  position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 40%,rgba(0,255,163,.05));
-  opacity:0;transition:opacity .4s;pointer-events:none;
-}
-.proj-card:hover{border-color:rgba(0,255,163,.4)}
-.proj-card:hover::before{opacity:1}
-.proj-card:hover .proj-arrow{transform:translate(5px,-5px);color:var(--green)}
-.proj-card:hover .proj-img-overlay{opacity:1}
+    .subtitle {
+      margin: 10px 0 0;
+      font-size: clamp(1.15rem, 2vw, 1.6rem);
+      color: var(--accent-2);
+      font-weight: 600;
+    }
 
-.proj-img{
-  height:220px;background:var(--bg3);
-  position:relative;overflow:hidden;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-}
-.proj-img-overlay{
-  position:absolute;inset:0;
-  background:rgba(0,255,163,.03);
-  opacity:0;transition:opacity .4s;
-}
+    .lead { font-size: 1.05rem; color: var(--muted); }
+    .stack { display: grid; gap: 14px; }
 
-/* project image upload zone */
-.proj-img-zone{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:10px;
-  cursor:pointer;
-}
-.proj-img-zone input{display:none}
-.proj-img-zone .upload-hint{
-  font-family:var(--mono);font-size:10px;
-  color:var(--muted);letter-spacing:.12em;text-align:center;
-  transition:color .2s;
-}
-.proj-img-zone:hover .upload-hint{color:var(--green)}
-.proj-img-zone .upload-icon{opacity:.2;transition:opacity .2s}
-.proj-img-zone:hover .upload-icon{opacity:.5}
-.proj-img-zone img.uploaded{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;display:none;
-}
-.proj-img-zone img.uploaded.show{display:block}
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
 
-.proj-body{padding:28px}
-.proj-cat{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
-.proj-title{font-family:var(--syne);font-size:22px;font-weight:700;text-transform:uppercase;color:#fff;line-height:1.1;margin-bottom:10px}
-.proj-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px}
-.proj-footer{display:flex;align-items:center;justify-content:space-between}
-.proj-stack{display:flex;gap:6px;flex-wrap:wrap}
-.proj-arrow{font-size:20px;color:var(--muted);transition:all .25s}
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-weight: 600;
+    }
 
-/* ── 3D PCB CANVAS ── */
-.pcb-section{
-  position:relative;z-index:2;
-  max-width:1300px;margin:0 auto;
-  padding:0 48px 80px;
-}
-.pcb-canvas-wrap{
-  background:var(--bg1);
-  border:1px solid var(--border);
-  height:420px;
-  position:relative;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-}
-#pcb3d{display:block}
-.pcb-label{
-  position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
-  font-family:var(--mono);font-size:11px;color:var(--muted);
-  letter-spacing:.12em;text-align:center;
-  pointer-events:none;
-}
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
 
-/* ── EDUCATION ── */
-.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
-.edu-card{
-  background:var(--bg1);border:1px solid var(--border);
-  padding:40px;position:relative;overflow:hidden;
-}
-.edu-card::before{
-  content:'';position:absolute;top:0;left:0;
-  width:100%;height:3px;
-  background:linear-gradient(90deg,var(--green),transparent);
-}
-.edu-year{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.15em;margin-bottom:10px}
-.edu-deg{font-family:var(--syne);font-size:26px;font-weight:700;text-transform:uppercase;color:#fff;line-height:1.1;margin-bottom:8px}
-.edu-school{font-family:var(--mono);font-size:13px;color:var(--green)}
-.edu-detail{font-size:13px;color:var(--muted);line-height:1.7;margin-top:14px}
+    .btn:hover { transform: translateY(-1px); }
 
-/* ── CONTACT ── */
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
-.contact-card{background:var(--bg1);border:1px solid var(--border);padding:48px}
-.contact-card.accent{background:var(--green);border-color:var(--green)}
-.contact-card.accent *{color:#000!important}
-.contact-h{font-family:var(--syne);font-size:36px;font-weight:800;text-transform:uppercase;color:#fff;line-height:1.05;margin-bottom:20px}
-.contact-p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:32px}
-.contact-links{display:flex;flex-direction:column;gap:14px}
-.clink{
-  display:flex;align-items:center;gap:14px;
-  font-family:var(--mono);font-size:12px;color:var(--muted);
-  text-decoration:none;transition:color .2s;
-}
-.clink:hover{color:var(--green)}
-.clink-icon{
-  width:36px;height:36px;border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;flex-shrink:0;transition:border-color .2s;
-}
-.clink:hover .clink-icon{border-color:var(--green)}
-.btn-black{
-  display:inline-flex;align-items:center;gap:10px;
-  padding:14px 30px;background:#000;color:var(--green);
-  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-  text-decoration:none;transition:background .2s;cursor:none;
-}
-.btn-black:hover{background:#111}
+    .section-title {
+      font-size: clamp(1.9rem, 3vw, 2.8rem);
+      margin: 0 0 10px;
+    }
 
-/* ── FOOTER ── */
-footer{
-  position:relative;z-index:2;
-  border-top:1px solid var(--border);
-  padding:28px 48px;
-  display:flex;align-items:center;justify-content:space-between;
-  font-family:var(--mono);font-size:10px;color:var(--muted);
-}
+    .section-intro {
+      color: var(--muted);
+      max-width: 820px;
+      margin-bottom: 28px;
+    }
 
-/* ── SCROLL REVEAL ── */
-.reveal{
-  opacity:0;transform:translateY(40px);
-  transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);
-}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal.from-left{transform:translateX(-40px)}
-.reveal.from-left.visible{transform:translateX(0)}
-.reveal.from-right{transform:translateX(40px)}
-.reveal.from-right.visible{transform:translateX(0)}
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip {
+      background: var(--chip);
+      color: var(--accent-2);
+      border: 1px solid #dbeafe;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+    }
 
-/* scrollbar */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-::-webkit-scrollbar-thumb:hover{background:rgba(0,255,163,.3)}
+    .list-box { display: grid; gap: 12px; }
+    .list-item {
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+    }
 
-@media(max-width:900px){
-  .hero{grid-template-columns:1fr;gap:60px}
-  .hero-right{justify-content:flex-start}
-  nav,section,.section,.pcb-section,.terminal-section{padding-left:20px;padding-right:20px}
-  .edu-grid,.contact-grid{grid-template-columns:1fr}
-  .nav-status{display:none}
-}
-</style>
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .project-card .actions { margin-top: auto; padding-top: 16px; }
+
+    .project-links {
+      display: grid;
+      gap: 14px;
+    }
+
+    .project-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      transition: 0.2s ease;
+    }
+
+    .project-link:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+    .muted { color: var(--muted); }
+    .spacer { height: 22px; }
+
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .detail-section + .detail-section { margin-top: 18px; }
+    .detail-section h3 { margin: 0 0 12px; font-size: 1.25rem; }
+    .detail-section p { margin: 0 0 12px; color: var(--muted); }
+
+    .bullet-list {
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .bullet-list li {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+      color: var(--muted);
+    }
+
+    .image-placeholder {
+      min-height: 190px;
+      border: 1px dashed #94a3b8;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff, #f8fafc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 16px;
+    }
+
+    .timeline-item {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: white;
+    }
+
+    .timeline-item h3 { margin: 0 0 12px; }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      background: white;
+      padding: 22px 0 28px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .grid-3,
+      .grid-2,
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .page { padding: 34px 0 56px; }
+      .card.pad-lg { padding: 22px; }
+      .image-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-<div class="pcb-bg"></div>
-<!-- animated traces -->
-<div class="trace-h" style="top:18%;animation-delay:0s"></div>
-<div class="trace-h" style="top:52%;animation-delay:5s"></div>
-<div class="trace-h" style="top:78%;animation-delay:9s"></div>
-<div class="trace-v" style="left:22%;animation-delay:2s"></div>
-<div class="trace-v" style="left:65%;animation-delay:7s"></div>
-
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-id">ks<span>@firmware</span>:~</a>
-  <ul class="nav-links">
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#education">Education</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="nav-status">
-    <div class="status-dot"></div>
-    <span>Open to opportunities · Canada</span>
-  </div>
-</nav>
-
-<!-- HERO -->
-<div class="hero section" style="padding-top:100px">
-  <div class="hero-left">
-    <div class="hero-eyebrow">Junior Embedded Firmware Engineer</div>
-    <div class="hero-name">KUSHAL<br><span class="last">SEDHAI</span></div>
-    <div class="hero-role" id="typewriter"></div>
-    <p class="hero-bio">
-      I design and build embedded systems using STM32 (ARM Cortex-M), with a focus on low-level firmware, peripheral interfacing, and hardware-software integration. Most of my growth has come from building systems that didn't work the first time — debugging, iterating, and understanding why.
-    </p>
-    <div class="hero-chips">
-      <span class="chip active">STM32</span>
-      <span class="chip active">ARM Cortex-M</span>
-      <span class="chip active">LL APIs</span>
-      <span class="chip">PCB Design</span>
-      <span class="chip">Embedded C</span>
-      <span class="chip">DMA / Timers</span>
-    </div>
-    <div class="hero-btns">
-      <a href="#projects" class="btn btn-green">See My Work →</a>
-      <a href="https://github.com/KushalSedhai" target="_blank" class="btn btn-ghost">GitHub ↗</a>
-    </div>
-  </div>
-
-  <div class="hero-right">
-    <div class="persona-wrap">
-      <div class="persona-ring"></div>
-      <div class="persona-photo" id="personaPhoto">
-        <!-- PHOTO ZONE — click to upload -->
-        <div class="photo-placeholder" id="photoPlaceholder" onclick="document.getElementById('heroPhotoInput').click()" style="cursor:pointer">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-            <circle cx="32" cy="24" r="12" stroke="#4a6860" stroke-width="1.5"/>
-            <path d="M8 56c0-13.3 10.7-24 24-24s24 10.7 24 24" stroke="#4a6860" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <span>CLICK TO UPLOAD<br>YOUR PHOTO</span>
-          <input type="file" id="heroPhotoInput" accept="image/*" style="display:none" onchange="loadHeroPhoto(this)">
-        </div>
-        <img id="heroPhotoImg" src="" alt="Kushal Sedhai" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:none"/>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <div class="brand">
+        <h1>Kushal Sedhai</h1>
+        <p>Junior Embedded Firmware Engineer</p>
       </div>
-      <!-- corner markers -->
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
-      <!-- floating info chips -->
-      <div class="float-chip fc1">MEng Mechatronics · UBC</div>
-      <div class="float-chip fc2">STM32 · ARM Cortex-M</div>
-      <div class="float-chip fc3">KiCad · PCB Design</div>
+      <nav>
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#learning" class="nav-link">Learning Timeline</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
     </div>
-  </div>
-</div>
+  </header>
 
-<!-- TERMINAL -->
-<div class="terminal-section">
-  <div class="terminal reveal">
-    <div class="term-bar">
-      <div class="term-dot r"></div>
-      <div class="term-dot y"></div>
-      <div class="term-dot g"></div>
-      <span class="term-title">kushal@stm32 ~ bash</span>
-    </div>
-    <div class="term-body" id="termBody">
-      <!-- filled by JS -->
-    </div>
-  </div>
-</div>
-
-<!-- SKILLS -->
-<section class="section" id="skills">
-  <div class="sec-head reveal">
-    <span class="sec-num">01</span>
-    <h2 class="sec-title">Skills</h2>
-    <div class="sec-line"></div>
-  </div>
-  <div class="skills-grid">
-    <div class="skill-card reveal" data-delay="0">
-      <div class="sk-num">// 01</div>
-      <div class="sk-title">Embedded Firmware</div>
-      <p class="sk-desc">Building STM32 firmware from the ground up using LL APIs — writing peripheral drivers, understanding registers, and debugging system behavior at a low level. Currently focused on DMA.</p>
-      <div class="sk-bar-wrap"><div class="sk-bar" data-w="55"></div></div>
-      <div class="sk-bar-label"><span>Actively building</span><span>LL-first approach</span></div>
-      <div class="sk-tags" style="margin-top:14px">
-        <span class="stag lit">STM32</span>
-        <span class="stag lit">ARM Cortex-M</span>
-        <span class="stag lit">LL APIs</span>
-        <span class="stag">Interrupts</span>
-        <span class="stag">Timers</span>
-        <span class="stag">DMA</span>
-        <span class="stag">ADC</span>
-        <span class="stag">UART/SPI/I2C</span>
-      </div>
-    </div>
-    <div class="skill-card reveal" data-delay="100">
-      <div class="sk-num">// 02</div>
-      <div class="sk-title">PCB Design</div>
-      <p class="sk-desc">Designing two-layer boards in KiCad — schematic capture, ground planes, decoupling placement, power integrity, and Gerber export. Built a manufacturable STM32F1 dev board.</p>
-      <div class="sk-bar-wrap"><div class="sk-bar" data-w="58"></div></div>
-      <div class="sk-bar-label"><span>Hands-on experience</span><span>Real boards designed</span></div>
-      <div class="sk-tags" style="margin-top:14px">
-        <span class="stag lit">KiCad</span>
-        <span class="stag">Schematic Capture</span>
-        <span class="stag">Ground Plane</span>
-        <span class="stag">Power Integrity</span>
-        <span class="stag">Decoupling</span>
-        <span class="stag">Gerber Export</span>
-      </div>
-    </div>
-    <div class="skill-card reveal" data-delay="200">
-      <div class="sk-num">// 03</div>
-      <div class="sk-title">Programming & Tools</div>
-      <p class="sk-desc">Embedded C as the primary language. Python and MATLAB for scripting, automation, and data work. Version control with Git, project tracking with Jira and Confluence.</p>
-      <div class="sk-bar-wrap"><div class="sk-bar" data-w="65"></div></div>
-      <div class="sk-bar-label"><span>Multi-language</span><span>Daily tooling</span></div>
-      <div class="sk-tags" style="margin-top:14px">
-        <span class="stag lit">Embedded C/C++</span>
-        <span class="stag lit">Python</span>
-        <span class="stag">MATLAB</span>
-        <span class="stag">Git / GitHub</span>
-        <span class="stag">Jira</span>
-        <span class="stag">Confluence</span>
-        <span class="stag">VBA / Excel</span>
-      </div>
-    </div>
-    <div class="skill-card reveal" data-delay="300">
-      <div class="sk-num">// 04</div>
-      <div class="sk-title">Electrical & Instrumentation</div>
-      <p class="sk-desc">Electrical schematics, wiring diagrams, signal conditioning, and sensor integration. RTD, pressure, and ultrasonic sensors. PLC programming, SCADA, Modbus TCP, and HMI design.</p>
-      <div class="sk-bar-wrap"><div class="sk-bar" data-w="62"></div></div>
-      <div class="sk-bar-label"><span>Applied experience</span><span>Industrial + lab</span></div>
-      <div class="sk-tags" style="margin-top:14px">
-        <span class="stag lit">PLC Programming</span>
-        <span class="stag">SCADA / HMI</span>
-        <span class="stag">Modbus TCP</span>
-        <span class="stag">Sensors</span>
-        <span class="stag">Signal Conditioning</span>
-        <span class="stag">PID Control</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 3D PCB SECTION -->
-<div class="pcb-section">
-  <div class="pcb-canvas-wrap reveal">
-    <canvas id="pcb3d" width="1200" height="420"></canvas>
-    <div class="pcb-label">INTERACTIVE 3D PCB · DRAG TO ROTATE · SCROLL TO ZOOM</div>
-  </div>
-</div>
-
-<!-- PROJECTS -->
-<section class="section" id="projects">
-  <div class="sec-head reveal">
-    <span class="sec-num">02</span>
-    <h2 class="sec-title">Projects</h2>
-    <div class="sec-line"></div>
-  </div>
-  <div class="projects-grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr))">
-
-    <!-- Project 1 — ADC DMA -->
-    <a href="projects/adc-dma.html" class="proj-card reveal">
-      <div class="proj-img">
-        <div class="proj-img-overlay"></div>
-        <div class="proj-img-zone" id="zone1" onclick="triggerUpload(event,'proj1input')">
-          <svg class="upload-icon" width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <rect x="5" y="12" width="30" height="22" rx="2" stroke="#4a6860" stroke-width="1.2"/>
-            <path d="M20 8v10M16 12l4-4 4 4" stroke="#4a6860" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-          <span class="upload-hint">CLICK TO ADD PROJECT IMAGE</span>
-          <input type="file" id="proj1input" accept="image/*" onchange="loadProjPhoto(this,'zone1')">
-          <img class="uploaded" id="proj1img" src="" alt="">
-        </div>
-        <svg id="proj1svg" width="280" height="160" viewBox="0 0 280 160" fill="none" style="position:absolute;pointer-events:none">
-          <!-- waveform / ADC signal -->
-          <polyline points="20,110 40,110 40,50 70,50 70,110 100,110 100,70 120,70 120,110 150,110 150,45 180,45 180,110 210,110 210,60 240,60 240,110 260,110" stroke="#00ffa3" stroke-width="1.5" fill="none" opacity=".7"/>
-          <!-- DMA arrow -->
-          <line x1="140" y1="130" x2="140" y2="148" stroke="#00cfff" stroke-width="1" opacity=".5"/>
-          <polygon points="140,150 136,142 144,142" fill="#00cfff" opacity=".5"/>
-          <text x="140" y="158" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#00cfff" opacity=".5">DMA → UART</text>
-          <!-- MCU box -->
-          <rect x="110" y="18" width="60" height="24" fill="#0a1828" stroke="#00cfff" stroke-width="1" stroke-opacity=".6"/>
-          <text x="140" y="33" text-anchor="middle" font-family="JetBrains Mono" font-size="7.5" fill="#00cfff" opacity=".8">STM32F446</text>
-        </svg>
-      </div>
-      <div class="proj-body">
-        <div class="proj-cat">Firmware · ADC · DMA</div>
-        <div class="proj-title">ADC + DMA Multi-Channel Data Acquisition</div>
-        <p class="proj-desc">Multi-channel analog sampling on STM32F446RE using ADC scan mode and DMA circular buffers. Data streamed over UART in real time with reduced CPU overhead.</p>
-        <div class="proj-footer">
-          <div class="proj-stack">
-            <span class="stag lit">STM32F446</span>
-            <span class="stag lit">DMA</span>
-            <span class="stag">ADC Scan</span>
-            <span class="stag">UART</span>
+  <main>
+    <section id="home" class="page active">
+      <div class="container">
+        <div class="hero">
+          <div>
+            <div class="eyebrow">Open to opportunities and relocation across Canada</div>
+            <h1 class="hero-title">Kushal Sedhai</h1>
+            <p class="subtitle">Junior Embedded Firmware Engineer</p>
+            <div class="stack lead" style="margin-top:22px;">
+              <p>I design and build embedded systems using STM32 (ARM Cortex-M), with a strong focus on low-level firmware, peripheral interfacing, and hardware-software integration.</p>
+              <p>My learning in embedded systems has been largely self-driven and built from the ground up. I have been working through real hardware problems, debugging communication issues, and understanding how microcontroller-based systems behave at a low level.</p>
+              <p>Most of my growth has come from building systems that did not work the first time. I have spent long hours debugging unstable communication, fixing timing issues, and understanding how different parts of a system interact.</p>
+              <p>What keeps me motivated is the moment when everything finally works—when communication stabilizes, data becomes reliable, and the system behaves exactly as expected after multiple iterations.</p>
+            </div>
+            <div class="btn-row">
+              <a class="btn primary nav-link" href="#projects">View Projects</a>
+              <a class="btn nav-link" href="#learning">Learning Timeline</a>
+              <a class="btn nav-link" href="#contact">Contact</a>
+            </div>
           </div>
-          <span class="proj-arrow">↗</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- Project 2 — PCB -->
-    <a href="projects/bluepill-clone.html" class="proj-card reveal">
-      <div class="proj-img">
-        <div class="proj-img-overlay"></div>
-        <div class="proj-img-zone" id="zone2" onclick="triggerUpload(event,'proj2input')">
-          <svg class="upload-icon" width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <rect x="5" y="12" width="30" height="22" rx="2" stroke="#4a6860" stroke-width="1.2"/>
-            <path d="M20 8v10M16 12l4-4 4 4" stroke="#4a6860" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-          <span class="upload-hint">CLICK TO ADD PROJECT IMAGE</span>
-          <input type="file" id="proj2input" accept="image/*" onchange="loadProjPhoto(this,'zone2')">
-          <img class="uploaded" id="proj2img" src="" alt="">
-        </div>
-        <svg id="proj2svg" width="280" height="160" viewBox="0 0 280 160" fill="none" style="position:absolute;pointer-events:none">
-          <rect x="70" y="15" width="140" height="130" rx="2" stroke="#00ffa3" stroke-width="1.5" fill="#060810" stroke-opacity=".8"/>
-          <rect x="110" y="15" width="60" height="14" rx="1" stroke="#ff6b35" stroke-width="1" fill="#090c14"/>
-          <text x="140" y="25" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#ff6b35" opacity=".7">USB-C</text>
-          <rect x="98" y="52" width="84" height="72" fill="#090c14" stroke="#00cfff" stroke-width="1.2"/>
-          <text x="140" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#00cfff">STM32F1</text>
-          <text x="140" y="100" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#4a6860">C8T6</text>
-          <rect x="70" y="40" width="10" height="5" rx="1" fill="#00ffa3" opacity=".35"/><rect x="70" y="50" width="10" height="5" rx="1" fill="#00ffa3" opacity=".35"/><rect x="70" y="60" width="10" height="5" rx="1" fill="#00ffa3" opacity=".35"/>
-          <rect x="200" y="40" width="10" height="5" rx="1" fill="#00ffa3" opacity=".35"/><rect x="200" y="50" width="10" height="5" rx="1" fill="#00ffa3" opacity=".35"/>
-        </svg>
-      </div>
-      <div class="proj-body">
-        <div class="proj-cat">Hardware · PCB Design</div>
-        <div class="proj-title">Custom STM32F1 Development Board</div>
-        <p class="proj-desc">Designed a simplified STM32F1 dev board in KiCad inspired by the Blue Pill. Two-layer PCB with proper ground plane, decoupling, AMS1117 regulator, and clean routing.</p>
-        <div class="proj-footer">
-          <div class="proj-stack">
-            <span class="stag lit">KiCad</span>
-            <span class="stag lit">STM32F1</span>
-            <span class="stag">2-Layer PCB</span>
+          <div class="card pad-lg">
+            <h2 style="margin-top:0;">Focus Areas</h2>
+            <div class="list-box">
+              <div class="list-item">Embedded firmware development using STM32 (ARM Cortex-M)</div>
+              <div class="list-item">Low-level peripheral interfacing and control</div>
+              <div class="list-item">Hardware-software integration</div>
+              <div class="list-item">Debugging and system validation</div>
+            </div>
           </div>
-          <span class="proj-arrow">↗</span>
         </div>
-      </div>
-    </a>
 
-    <!-- Project 3 — DED -->
-    <a href="projects/ded-controller.html" class="proj-card reveal">
-      <div class="proj-img">
-        <div class="proj-img-overlay"></div>
-        <div class="proj-img-zone" id="zone3" onclick="triggerUpload(event,'proj3input')">
-          <svg class="upload-icon" width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <rect x="5" y="12" width="30" height="22" rx="2" stroke="#4a6860" stroke-width="1.2"/>
-            <path d="M20 8v10M16 12l4-4 4 4" stroke="#4a6860" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-          <span class="upload-hint">CLICK TO ADD PROJECT IMAGE</span>
-          <input type="file" id="proj3input" accept="image/*" onchange="loadProjPhoto(this,'zone3')">
-          <img class="uploaded" id="proj3img" src="" alt="">
+        <div class="spacer"></div>
+
+        <div class="card pad-lg" style="margin-bottom:22px;">
+          <div class="eyebrow">About</div>
+          <h2 class="section-title">Brief Introduction</h2>
+          <p class="section-intro" style="margin-bottom:0; max-width:none;">I recently completed my Master’s in Mechatronics Engineering at the University of British Columbia and developed a strong interest in embedded systems during that journey. I am now focused on growing as a Junior Embedded Firmware Engineer, combining low-level STM32 development with a broader background in hardware, controls, instrumentation, and mechanical system integration.</p>
         </div>
-        <svg id="proj3svg" width="280" height="160" viewBox="0 0 280 160" fill="none" style="position:absolute;pointer-events:none">
-          <line x1="140" y1="10" x2="140" y2="150" stroke="#00ffa3" stroke-width="1" stroke-opacity=".5" stroke-dasharray="4,3"/>
-          <line x1="10" y1="80" x2="270" y2="80" stroke="#00ffa3" stroke-width="1" stroke-opacity=".5" stroke-dasharray="4,3"/>
-          <polygon points="140,8 136,18 144,18" fill="#00ffa3" opacity=".7"/>
-          <polygon points="272,80 262,76 262,84" fill="#00ffa3" opacity=".7"/>
-          <rect x="120" y="60" width="40" height="40" stroke="#00ffa3" stroke-width="1.5" fill="#090c14" stroke-opacity=".8"/>
-          <text x="140" y="84" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#00ffa3" opacity=".8">DED</text>
-          <circle cx="50" cy="80" r="14" stroke="#ff6b35" stroke-width="1" fill="none" opacity=".6"/>
-          <text x="50" y="84" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#ff6b35" opacity=".7">Mx</text>
-          <circle cx="230" cy="80" r="14" stroke="#ff6b35" stroke-width="1" fill="none" opacity=".6"/>
-          <text x="230" y="84" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#ff6b35" opacity=".7">Mz</text>
-        </svg>
-      </div>
-      <div class="proj-body">
-        <div class="proj-cat">Systems · Motion Control</div>
-        <div class="proj-title">3-Axis Motion Control — DED Machine</div>
-        <p class="proj-desc">Multi-axis motion control system for a Directed Energy Deposition machine. MATLAB commands sent via UART to microcontrollers controlling steppers and a servo. Custom PCB for integration.</p>
-        <div class="proj-footer">
-          <div class="proj-stack">
-            <span class="stag lit">UART</span>
-            <span class="stag lit">SPI</span>
-            <span class="stag">MATLAB</span>
-            <span class="stag">Motion</span>
+
+        <div class="card pad-lg" style="margin-bottom:22px;">
+          <div class="eyebrow">Skills Snapshot</div>
+          <h2 class="section-title">Core Skills</h2>
+          <div class="grid-2">
+            <div>
+              <h3>Embedded &amp; Firmware</h3>
+              <div class="chips">
+                <span class="chip">Embedded C/C++</span><span class="chip">STM32</span><span class="chip">ARM Cortex-M</span><span class="chip">Bare-metal concepts</span><span class="chip">Interrupts</span><span class="chip">Timers</span><span class="chip">Peripheral drivers</span><span class="chip">SPI</span><span class="chip">I2C</span><span class="chip">UART</span><span class="chip">RS-232</span><span class="chip">Debugging and bring-up</span>
+              </div>
+            </div>
+            <div>
+              <h3>Broader Engineering</h3>
+              <div class="chips">
+                <span class="chip">Python</span><span class="chip">MATLAB</span><span class="chip">PCB design</span><span class="chip">Electrical schematics</span><span class="chip">Signal conditioning</span><span class="chip">PLC programming</span><span class="chip">SCADA</span><span class="chip">PID control</span><span class="chip">SolidWorks</span><span class="chip">Fusion 360</span>
+              </div>
+            </div>
           </div>
-          <span class="proj-arrow">↗</span>
+        </div>
+
+        <div class="card pad-lg" style="margin-bottom:22px;">
+          <div class="eyebrow">Learning Timeline</div>
+          <h2 class="section-title">How I’ve been building my embedded foundation</h2>
+          <p class="section-intro">My embedded learning path has been step-by-step and intentional, with a strong focus on low-level understanding using STM32 and ARM Cortex-M systems.</p>
+          <div class="timeline">
+            <div class="timeline-item">
+              <h3>Foundations</h3>
+              <div class="chips"><span class="chip">C programming</span><span class="chip">Pointers</span><span class="chip">Memory concepts</span><span class="chip">Structures</span><span class="chip">Microcontroller basics</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>GPIO Development with LL APIs</h3>
+              <div class="chips"><span class="chip">Peripheral configuration</span><span class="chip">Digital input/output</span><span class="chip">Pull-up / pull-down</span><span class="chip">Floating input behavior</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>UART Development with LL APIs</h3>
+              <div class="chips"><span class="chip">Transmit and receive</span><span class="chip">Serial setup</span><span class="chip">Baud rate understanding</span><span class="chip">Terminal debugging</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>General Purpose Timer Development with LL APIs</h3>
+              <div class="chips"><span class="chip">Prescaler</span><span class="chip">Auto-reload</span><span class="chip">Periodic timing</span><span class="chip">Timer-driven behavior</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>ADC Driver Development</h3>
+              <div class="chips"><span class="chip">Analog sampling</span><span class="chip">Channel configuration</span><span class="chip">Conversion flow</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>Interrupt Programming</h3>
+              <div class="chips"><span class="chip">EXTI</span><span class="chip">Asynchronous input handling</span><span class="chip">Callback-driven thinking</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>DMA Development (Current Focus)</h3>
+              <div class="chips"><span class="chip">Peripheral-to-memory transfer</span><span class="chip">Reduced CPU load</span><span class="chip">Continuous streaming</span><span class="chip">ADC integration</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card pad-lg">
+          <div class="eyebrow">Featured Work</div>
+          <h2 class="section-title">Selected Projects</h2>
+          <p class="section-intro">These projects reflect how I think about engineering: firmware depth, hardware awareness, and full system integration.</p>
+          <div class="grid-3">
+            <div class="card pad project-card">
+              <h3>STM32 ADC + DMA Multi-Channel Data Acquisition System</h3>
+              <p class="muted">Efficient multi-channel analog data acquisition using ADC and DMA, with UART streaming for real-time monitoring in RealTerm.</p>
+              <div class="chips">
+                <span class="chip">STM32F446RE</span>
+                <span class="chip">ADC</span>
+                <span class="chip">DMA</span>
+                <span class="chip">UART</span>
+              </div>
+              <div class="actions"><a class="btn nav-link" href="#project-adc-dma">Open Project</a></div>
+            </div>
+            <div class="card pad project-card">
+              <h3>Custom STM32F1 Development Board (KiCad)</h3>
+              <p class="muted">A simplified Blue Pill-style STM32F1 board designed to practice real PCB design considerations, including power integrity and layout discipline.</p>
+              <div class="chips">
+                <span class="chip">KiCad</span>
+                <span class="chip">STM32F1</span>
+                <span class="chip">AMS1117</span>
+                <span class="chip">Ground Plane</span>
+              </div>
+              <div class="actions"><a class="btn nav-link" href="#project-stm32-pcb">Open Project</a></div>
+            </div>
+            <div class="card pad project-card">
+              <h3>3-Axis Motion Control System for a DED Machine</h3>
+              <p class="muted">A system-level project integrating MATLAB control, UART communication, SPI motor control, Arduino-based controllers, and a custom PCB.</p>
+              <div class="chips">
+                <span class="chip">Arduino</span>
+                <span class="chip">MATLAB</span>
+                <span class="chip">SPI</span>
+                <span class="chip">UART</span>
+              </div>
+              <div class="actions"><a class="btn nav-link" href="#project-ded">Open Project</a></div>
+            </div>
+          </div>
         </div>
       </div>
-    </a>
+    </section>
 
-  </div>
-</section>
-
-<!-- EDUCATION -->
-<section class="section" id="education">
-  <div class="sec-head reveal">
-    <span class="sec-num">03</span>
-    <h2 class="sec-title">Education</h2>
-    <div class="sec-line"></div>
-  </div>
-  <div class="edu-grid">
-    <div class="edu-card reveal from-left">
-      <div class="edu-year">// Graduate Degree</div>
-      <div class="edu-deg">Master of Engineering<br>Mechatronics</div>
-      <div class="edu-school">University of British Columbia (UBC)</div>
-      <p class="edu-detail">Studied system design, control systems, hardware integration, and multidisciplinary engineering. Developed a strong interest in embedded systems during this period — specifically in how firmware interacts with hardware at a low level. This led me toward firmware development using STM32 and ARM Cortex-M systems.</p>
-      <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:6px">
-        <span class="stag lit">UBC</span>
-        <span class="stag">Control Systems</span>
-        <span class="stag">System Design</span>
-        <span class="stag">Hardware Integration</span>
-        <span class="stag">Mechatronics</span>
+    <section id="about" class="page">
+      <div class="container">
+        <div class="eyebrow">About</div>
+        <h2 class="section-title">Brief Introduction</h2>
+        <div class="card pad-lg">
+          <p>I recently completed my Master’s in Mechatronics Engineering at the University of British Columbia and developed a strong interest in embedded systems during that journey.</p>
+          <p>I am now focused on growing as a <strong>Junior Embedded Firmware Engineer</strong>, combining low-level STM32 development with a broader background in hardware, controls, instrumentation, and mechanical system integration.</p>
+        </div>
       </div>
-    </div>
-    <div class="edu-card reveal from-right" style="background:var(--bg2)">
-      <div class="edu-year">// Learning Progression</div>
-      <div class="edu-deg" style="color:var(--green)">Embedded Firmware<br>Ground Up</div>
-      <div class="edu-school" style="color:var(--blue)">Self-directed · Hands-on Projects</div>
-      <p class="edu-detail">C fundamentals → GPIO via LL APIs → UART → Timers → ADC → Interrupts → DMA (current). Focus on understanding how peripherals work internally — registers, timing, memory — rather than only using high-level abstractions.</p>
-      <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:6px">
-        <span class="stag lit">LL APIs</span>
-        <span class="stag lit">DMA (current)</span>
-        <span class="stag">Bare Metal</span>
-        <span class="stag">Peripheral Drivers</span>
-        <span class="stag">Next: SPI · I2C · RTOS</span>
+    </section>
+
+    <section id="skills" class="page">
+      <div class="container">
+        <div class="eyebrow">Skills</div>
+        <h2 class="section-title">Technical areas I work across</h2>
+        <p class="section-intro">My strongest current direction is embedded firmware, supported by broader experience in hardware, controls, instrumentation, automation, and mechanical system development.</p>
+        <div class="grid-2">
+          <div class="card pad-lg">
+            <h3>Embedded &amp; Firmware</h3>
+            <div class="chips">
+              <span class="chip">Embedded C/C++</span><span class="chip">STM32</span><span class="chip">ARM Cortex-M based systems</span><span class="chip">Bare-metal concepts</span><span class="chip">Interrupts</span><span class="chip">Timers</span><span class="chip">Peripheral drivers</span><span class="chip">SPI</span><span class="chip">I2C</span><span class="chip">UART</span><span class="chip">RS-232</span><span class="chip">Debugging and board bring-up</span>
+            </div>
+          </div>
+          <div class="card pad-lg">
+            <h3>Programming &amp; Automation</h3>
+            <div class="chips">
+              <span class="chip">C/C++</span><span class="chip">Python</span><span class="chip">MATLAB</span><span class="chip">Scripting</span><span class="chip">Algorithm implementation</span><span class="chip">Workflow automation</span><span class="chip">Microsoft Excel (advanced)</span><span class="chip">VBA</span><span class="chip">Git / GitHub</span><span class="chip">Jira</span><span class="chip">Confluence</span>
+            </div>
+          </div>
+          <div class="card pad-lg">
+            <h3>Electrical &amp; Instrumentation</h3>
+            <div class="chips">
+              <span class="chip">Electrical schematics</span><span class="chip">Wiring diagrams</span><span class="chip">PCB design</span><span class="chip">Sensors (RTD, pressure, ultrasonic)</span><span class="chip">Signal conditioning</span><span class="chip">Lab instrumentation</span>
+            </div>
+          </div>
+          <div class="card pad-lg">
+            <h3>Controls, PLC &amp; HMI</h3>
+            <div class="chips">
+              <span class="chip">PLC programming</span><span class="chip">SCADA systems</span><span class="chip">HMI design (VTScada)</span><span class="chip">Modbus TCP</span><span class="chip">Industrial I/O</span><span class="chip">PID control</span>
+            </div>
+          </div>
+          <div class="card pad-lg" style="grid-column: 1 / -1;">
+            <h3>Mechanical Design</h3>
+            <div class="chips">
+              <span class="chip">SolidWorks</span><span class="chip">Fusion 360</span><span class="chip">CAD modeling</span><span class="chip">Mechanical assemblies</span><span class="chip">Prototyping</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- CONTACT -->
-<section class="section" id="contact">
-  <div class="sec-head reveal">
-    <span class="sec-num">04</span>
-    <h2 class="sec-title">Contact</h2>
-    <div class="sec-line"></div>
-  </div>
-  <div class="contact-grid">
-    <div class="contact-card reveal from-left">
-      <h3 class="contact-h">Let's talk<br>firmware.</h3>
-      <p class="contact-p">Currently seeking opportunities as a Junior Embedded Firmware Engineer. Open to roles and relocation across Canada. Happy to connect with anyone working in embedded systems.</p>
-      <div class="contact-links">
-        <a href="https://github.com/KushalSedhai" target="_blank" class="clink">
-          <span class="clink-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          </span>
-          github.com/KushalSedhai
-        </a>
-        <a href="https://www.linkedin.com/in/kushalsedhai/" target="_blank" class="clink">
-          <span class="clink-icon" style="font-family:var(--mono);font-size:11px;font-weight:700">in</span>
-          linkedin.com/in/kushalsedhai
-        </a>
-        <a href="mailto:kushalsedhain@gmail.com" class="clink">
-          <span class="clink-icon">@</span>
-          kushalsedhain@gmail.com
-        </a>
+    <section id="projects" class="page">
+      <div class="container">
+        <div class="eyebrow">Projects</div>
+        <h2 class="section-title">Organized by how I approach engineering</h2>
+        <p class="section-intro">My work is organized into firmware development, hardware work, and embedded systems integration. This structure reflects how I think about engineering—understanding firmware deeply, designing hardware carefully, and integrating both into complete working systems.</p>
+        <div class="grid-3">
+          <div class="card pad-lg project-card">
+            <h3>Firmware Development</h3>
+            <p class="muted">Projects focused on low-level firmware, peripheral configuration, data movement, and real-time embedded behavior.</p>
+            <div class="actions"><a class="btn nav-link" href="#firmware">Open Section</a></div>
+          </div>
+          <div class="card pad-lg project-card">
+            <h3>Hardware Work</h3>
+            <p class="muted">Projects focused on board-level thinking, PCB design, power integrity, manufacturability, and hardware support around microcontrollers.</p>
+            <div class="actions"><a class="btn nav-link" href="#hardware">Open Section</a></div>
+          </div>
+          <div class="card pad-lg project-card">
+            <h3>Embedded Systems</h3>
+            <p class="muted">Projects that combine firmware, hardware, communications, control, and physical systems into complete working setups.</p>
+            <div class="actions"><a class="btn nav-link" href="#systems">Open Section</a></div>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <section id="firmware" class="page">
+      <div class="container">
+        <div class="eyebrow">Projects</div>
+        <h2 class="section-title">Firmware Development</h2>
+        <p class="section-intro">Projects focused on low-level firmware, peripheral configuration, data movement, and embedded behavior.</p>
+        <div class="project-links">
+          <a class="project-link nav-link" href="#project-adc-dma">
+            <div>
+              <h3 style="margin:0 0 8px;">STM32 ADC + DMA Multi-Channel Data Acquisition System</h3>
+              <p class="muted" style="margin:0;">Efficient multi-channel analog data acquisition using ADC and DMA, with UART streaming for real-time monitoring in RealTerm.</p>
+            </div>
+            <span>Open</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="hardware" class="page">
+      <div class="container">
+        <div class="eyebrow">Projects</div>
+        <h2 class="section-title">Hardware Work</h2>
+        <p class="section-intro">Projects focused on board-level thinking, PCB design, power integrity, and manufacturability.</p>
+        <div class="project-links">
+          <a class="project-link nav-link" href="#project-stm32-pcb">
+            <div>
+              <h3 style="margin:0 0 8px;">Custom STM32F1 Development Board (KiCad)</h3>
+              <p class="muted" style="margin:0;">A simplified Blue Pill-style board designed to practice real PCB design considerations, including power integrity, layout discipline, and manufacturability.</p>
+            </div>
+            <span>Open</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="systems" class="page">
+      <div class="container">
+        <div class="eyebrow">Projects</div>
+        <h2 class="section-title">Embedded Systems</h2>
+        <p class="section-intro">Projects that integrate firmware, communications, hardware, control, and physical systems into complete working setups.</p>
+        <div class="project-links">
+          <a class="project-link nav-link" href="#project-ded">
+            <div>
+              <h3 style="margin:0 0 8px;">3-Axis Motion Control System for a Directed Energy Deposition (DED) Machine</h3>
+              <p class="muted" style="margin:0;">A system-level project integrating MATLAB control, UART communication, SPI motor control, Arduino-based controllers, and a custom PCB to coordinate multi-axis motion.</p>
+            </div>
+            <span>Open</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="project-adc-dma" class="page">
+      <div class="container">
+        <a href="#projects" class="btn nav-link" style="margin-bottom:18px; display:inline-flex;">Back to Projects</a>
+        <div class="detail-layout">
+          <div>
+            <div class="eyebrow">Project Detail</div>
+            <h2 class="section-title">STM32 ADC + DMA Multi-Channel Data Acquisition System</h2>
+            <p class="section-intro">This project was built to explore efficient multi-channel analog data acquisition on an STM32 microcontroller using ADC and DMA, and then transmit the acquired data over UART for real-time visualization in RealTerm.</p>
+            <div class="chips" style="margin-bottom:20px;">
+              <span class="chip">STM32F446RE Nucleo</span><span class="chip">ARM Cortex-M4</span><span class="chip">ADC</span><span class="chip">DMA</span><span class="chip">UART</span><span class="chip">ST-LINK</span><span class="chip">RealTerm</span>
+            </div>
+
+            <div class="detail-section card pad">
+              <h3>Overview</h3>
+              <p>The goal was not just to read analog values, but to understand how continuous sampling can be implemented more efficiently by offloading repetitive data movement from the CPU.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Platform and Tools</h3>
+              <ul class="bullet-list">
+                <li>Board: STM32F446RE Nucleo board</li>
+                <li>Debugger: ST-LINK debugger</li>
+                <li>Microcontroller class: STM32 / ARM Cortex-M4</li>
+                <li>Visualization tool: RealTerm</li>
+                <li>Development context: peripheral-level embedded firmware development</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>What the Project Does</h3>
+              <p>The system samples multiple analog input channels using the ADC peripheral. Instead of manually reading every conversion result in software, DMA is used to automatically transfer sampled ADC values into memory.</p>
+              <p>The data is stored in a circular buffer so that sampling can continue continuously without constant CPU involvement. Once the data is available in memory, it is sent out over UART so that the sampled values can be monitored in RealTerm.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Technical Details</h3>
+              <ul class="bullet-list">
+                <li>Configured the ADC to sample multiple channels in scan mode</li>
+                <li>Used DMA in circular mode to continuously transfer ADC conversion results to memory</li>
+                <li>Stored conversion results in a memory buffer, allowing new samples to overwrite old ones in a continuous loop</li>
+                <li>Used UART transmission to stream ADC readings to a host PC</li>
+                <li>Visualized the data in RealTerm for real-time observation and debugging</li>
+                <li>Peripheral-to-memory DMA transfer</li>
+                <li>Continuous conversion mode</li>
+                <li>Conversion of raw ADC values into voltage</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Firmware Concepts Demonstrated</h3>
+              <ul class="bullet-list">
+                <li>ADC multi-channel scan configuration</li>
+                <li>DMA peripheral-to-memory transfer</li>
+                <li>Circular buffering for continuous acquisition</li>
+                <li>UART-based telemetry and data streaming</li>
+                <li>Buffer management and data formatting for serial output</li>
+                <li>Peripheral coordination across ADC, DMA, and UART</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Debugging and Development Experience</h3>
+              <p>A major part of this project was understanding how all the pieces interact and why data flow may stop or behave unexpectedly if one part is misconfigured.</p>
+              <p>It required attention to conversion mode behavior, DMA configuration, buffer sizing, UART output formatting, and timing and synchronization between peripherals.</p>
+              <p>Using the ST-LINK debugger and serial output through RealTerm, I was able to inspect system behavior and verify whether data was being sampled, moved, and transmitted correctly.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Results</h3>
+              <ul class="bullet-list">
+                <li>Continuous real-time sampling achieved</li>
+                <li>Reduced CPU load using DMA</li>
+                <li>Stable and reliable data streaming</li>
+              </ul>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Image / Visual Space</h3>
+              <div class="image-placeholder">Waveform screenshot, UART output snapshot from RealTerm, debugger screenshot, or a simple block diagram showing ADC → DMA → Buffer → UART</div>
+              <div class="spacer"></div>
+              <div class="image-grid">
+                <div class="image-placeholder">Image</div>
+                <div class="image-placeholder">Image</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="project-stm32-pcb" class="page">
+      <div class="container">
+        <a href="#projects" class="btn nav-link" style="margin-bottom:18px; display:inline-flex;">Back to Projects</a>
+        <div class="detail-layout">
+          <div>
+            <div class="eyebrow">Project Detail</div>
+            <h2 class="section-title">Custom STM32F1 Development Board (KiCad)</h2>
+            <p class="section-intro">This project involved designing a simplified STM32F1 development board inspired by the Blue Pill form factor. The objective was to practice practical PCB design by creating a usable microcontroller board while applying proper power, layout, and manufacturability considerations.</p>
+            <div class="chips" style="margin-bottom:20px;">
+              <span class="chip">KiCad</span><span class="chip">STM32F1</span><span class="chip">AMS1117</span><span class="chip">JLCPCB</span><span class="chip">PCB Layout</span><span class="chip">Ground Plane</span>
+            </div>
+
+            <div class="detail-section card pad">
+              <h3>Overview</h3>
+              <p>The board was designed in KiCad and built using components available from the JLCPCB parts library, which made the design more realistic from a fabrication and assembly perspective.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Design Goals</h3>
+              <ul class="bullet-list">
+                <li>Create a compact STM32F1 development board</li>
+                <li>Include practical support circuitry required for stable microcontroller operation</li>
+                <li>Apply good PCB design practices rather than just making a schematic that works</li>
+                <li>Design around real manufacturing constraints and available assembly parts</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Key Hardware Features</h3>
+              <ul class="bullet-list">
+                <li>External oscillator for stable clock generation</li>
+                <li>Decoupling capacitors placed close to microcontroller power pins</li>
+                <li>Bulk capacitor for supply stability</li>
+                <li>Filtered analog supply path</li>
+                <li>No VBAT connection in this version</li>
+                <li>SPDT switch for BOOT0 pin selection</li>
+                <li>AMS1117 linear regulator for 3.3 V supply from USB input</li>
+                <li>Accessible ST-LINK programming pins</li>
+                <li>Exposed I2C pins</li>
+                <li>Exposed UART pins</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>PCB Layout Practices Applied</h3>
+              <ul class="bullet-list">
+                <li>Designed as a two-layer PCB</li>
+                <li>Used the bottom layer as a ground plane, which improves return paths and helps reduce noise</li>
+                <li>Placed decoupling capacitors physically close to the MCU power pins to improve local supply stability</li>
+                <li>Used bulk capacitance to support power input stability</li>
+                <li>Considered analog supply filtering for cleaner analog behavior</li>
+                <li>Routed with awareness of practical board organization and usability</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Technical Notes</h3>
+              <p>This project gave me exposure to several important board-level concepts: why decoupling placement matters, why a ground plane is beneficial on a two-layer board, how external clock support is added, how BOOT0 needs to be handled for normal boot and programming modes, how regulator choice and USB-fed power affect board architecture, and how manufacturability influences component selection.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Outcome</h3>
+              <p>This project represents more than just copying a common development board. It reflects my interest in understanding what goes into a usable microcontroller board at the hardware level.</p>
+              <p>It also helped connect firmware-oriented thinking with board-level realities such as power integrity, placement, grounding, and bring-up readiness.</p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Image / Visual Space</h3>
+              <div class="image-placeholder">PCB schematic screenshot</div>
+              <div class="spacer"></div>
+              <div class="image-grid">
+                <div class="image-placeholder">PCB layout screenshot</div>
+                <div class="image-placeholder">3D render or manufactured board photo</div>
+              </div>
+              <div class="spacer"></div>
+              <p class="muted">This project benefits strongly from visual documentation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="project-ded" class="page">
+      <div class="container">
+        <a href="#projects" class="btn nav-link" style="margin-bottom:18px; display:inline-flex;">Back to Projects</a>
+        <div class="detail-layout">
+          <div>
+            <div class="eyebrow">Project Detail</div>
+            <h2 class="section-title">3-Axis Motion Control System for a Directed Energy Deposition (DED) Machine</h2>
+            <p class="section-intro">This project involved the integration of firmware, control, electronics, and motion hardware for a 3-axis motion system used in a Directed Energy Deposition machine. It is one of my most complete system-level projects because it required coordinating software, microcontrollers, motor interfaces, and physical hardware into one working setup.</p>
+            <div class="chips" style="margin-bottom:20px;">
+              <span class="chip">Arduino</span><span class="chip">MATLAB</span><span class="chip">UART</span><span class="chip">SPI</span><span class="chip">Stepper Motors</span><span class="chip">Servo</span><span class="chip">Custom PCB</span>
+            </div>
+
+            <div class="detail-section card pad">
+              <h3>System Architecture</h3>
+              <p>The control system involved MATLAB, microcontrollers, motor drivers, motors, and a custom PCB. A control algorithm was implemented in MATLAB, which generated commands and sent them over UART to embedded controllers.</p>
+              <p>The controllers then translated those commands into motion outputs for the different axes.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Controller Breakdown</h3>
+              <ul class="bullet-list">
+                <li>One Arduino-based controller handled the X and Y axes</li>
+                <li>Another Arduino-based controller handled the Z axis</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Motion Hardware</h3>
+              <ul class="bullet-list">
+                <li>X and Y axes controlled through stepper motor drivers</li>
+                <li>Communication to stepper drivers performed over SPI from Arduino</li>
+                <li>Z axis controlled using a servo motor system with an integrated driver</li>
+                <li>The second Arduino issued commands to the Z-axis servo system rather than directly generating low-level motor drive signals</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Communication Flow</h3>
+              <ul class="bullet-list">
+                <li>MATLAB controller sends commands to the Arduino boards via UART</li>
+                <li>Arduino controller for X and Y communicates with two stepper motor drivers using SPI</li>
+                <li>Arduino system also returns information back to MATLAB, enabling command-and-feedback style operation</li>
+                <li>Z-axis Arduino issues commands to the servo-driven actuator</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>PCB Integration</h3>
+              <p>One important part of the system was the use of a custom PCB to replace messy point-to-point wiring.</p>
+              <p>The Arduino boards sat on top of a PCB with traces that organized power and signal routing and made the overall setup cleaner, more reliable, and easier to manage.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Engineering Challenges</h3>
+              <ul class="bullet-list">
+                <li>Coordinating multiple axes</li>
+                <li>Handling UART communication between MATLAB and microcontrollers</li>
+                <li>Handling SPI communication to motor drivers</li>
+                <li>Integrating two separate controller roles within the overall architecture</li>
+                <li>Reducing hardware clutter and improving maintainability through PCB design</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Why This Project Is Important</h3>
+              <p>This project ties together several layers of engineering: embedded communication, actuator control, motion coordination, control-system integration, PCB-assisted hardware organization, and firmware and hardware working together in one real setup.</p>
+              <p>It reflects the type of work I enjoy most: embedded systems that sit between software logic and real physical machinery.</p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Image / Visual Space</h3>
+              <div class="image-placeholder">Full system setup photo or system block diagram showing MATLAB → UART → Arduino → SPI motor drivers / servo control</div>
+              <div class="spacer"></div>
+              <div class="image-grid">
+                <div class="image-placeholder">Custom PCB photo</div>
+                <div class="image-placeholder">3-axis controller or machine photo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="learning" class="page">
+      <div class="container">
+        <div class="eyebrow">Learning Timeline</div>
+        <h2 class="section-title">A step-by-step path into embedded systems</h2>
+        <p class="section-intro">I have been building my embedded knowledge step by step, focusing on low-level development using STM32 and ARM Cortex-M systems.</p>
+        <div class="card pad-lg" style="margin-bottom:22px;">
+          <p class="muted" style="margin:0;">I focus on understanding how peripherals work internally rather than only using high-level libraries. This includes understanding registers, timing, and system behavior during debugging.</p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <h3>Foundations</h3>
+            <div class="chips"><span class="chip">C programming</span><span class="chip">Pointers</span><span class="chip">Memory concepts</span><span class="chip">Structures</span><span class="chip">Microcontroller basics</span><span class="chip">Memory-mapped peripheral thinking</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>GPIO Development with LL APIs</h3>
+            <div class="chips"><span class="chip">Basic peripheral configuration</span><span class="chip">Digital input and output control</span><span class="chip">Pull-up and pull-down concepts</span><span class="chip">Floating input behavior</span><span class="chip">Hardware interaction through pins</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>UART Development with LL APIs</h3>
+            <div class="chips"><span class="chip">Transmit and receive concepts</span><span class="chip">Serial communication setup</span><span class="chip">Baud rate understanding</span><span class="chip">Terminal debugging</span><span class="chip">Clock configuration awareness</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>General Purpose Timer Development with LL APIs</h3>
+            <div class="chips"><span class="chip">Timer setup and configuration</span><span class="chip">Prescaler and auto-reload concepts</span><span class="chip">Periodic timing generation</span><span class="chip">Timer-driven behavior</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>ADC Driver Development</h3>
+            <div class="chips"><span class="chip">Analog sampling</span><span class="chip">Channel configuration</span><span class="chip">Conversion flow</span><span class="chip">Meaningful measurements from raw digital values</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>Interrupt Programming</h3>
+            <div class="chips"><span class="chip">EXTI based event handling</span><span class="chip">Asynchronous input handling</span><span class="chip">Callback-driven thinking</span><span class="chip">Interrupt response behavior</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>DMA Development (Current Focus)</h3>
+            <div class="chips"><span class="chip">Efficient peripheral-to-memory data movement</span><span class="chip">Reduced CPU involvement</span><span class="chip">Continuous streaming concepts</span><span class="chip">ADC integration for real-time acquisition</span></div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="grid-2">
+          <div class="card pad-lg">
+            <h3 style="margin-top:0;">Next Steps</h3>
+            <ul class="bullet-list">
+              <li>SPI development with LL APIs</li>
+              <li>I2C development with LL APIs</li>
+              <li>Deeper bare-metal work</li>
+              <li>RTOS concepts</li>
+              <li>More advanced driver development</li>
+              <li>Broader ARM Cortex-M understanding</li>
+            </ul>
+          </div>
+          <div class="card pad-lg">
+            <h3 style="margin-top:0;">Why this section matters</h3>
+            <p class="muted">I want this section to show not only what I have built, but how I have been building myself as an embedded developer.</p>
+            <p class="muted">My embedded learning path has been intentional. Instead of jumping directly into complex applications without understanding the basics, I have been working through peripheral development in a structured way, especially on STM32 and ARM Cortex-M based systems.</p>
+            <p class="muted">I enjoy learning each block properly, understanding what it does, how it is configured, and how it behaves during debugging.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="page">
+      <div class="container">
+        <div class="eyebrow">Contact</div>
+        <h2 class="section-title">Get in touch</h2>
+        <p class="section-intro">I am currently seeking opportunities as a Junior Embedded Firmware Engineer. If you would like to discuss opportunities, projects, or just connect, feel free to reach out.</p>
+        <div class="grid-2">
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Email</h3>
+              <p><a href="mailto:kushalsedhain@gmail.com">kushalsedhain@gmail.com</a></p>
+            </div>
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">LinkedIn</h3>
+              <p><a href="https://www.linkedin.com/in/kushalsedhai/" target="_blank">linkedin.com/in/kushalsedhai/</a></p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Availability</h3>
+              <p class="muted">Open to opportunities and relocation across Canada</p>
+            </div>
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Response Time</h3>
+              <p class="muted">I typically respond within 24 hours.</p>
+            </div>
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Website Note</h3>
+              <p class="muted">This structure is one way to organize the portfolio. If there is a stronger way to present the information more effectively, I am open to suggestions and improvement.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Designed to reflect my journey in embedded systems, firmware development, and hands-on engineering.</p>
+      <p>Junior Embedded Firmware Engineer focused on low-level development, hardware interaction, and real-world system building.</p>
     </div>
-    <div class="contact-card accent reveal from-right">
-      <h3 class="contact-h" style="color:#000">Open to<br>opportunities.</h3>
-      <p class="contact-p" style="color:rgba(0,0,0,.6)">Junior firmware roles, embedded systems work, or just a conversation about low-level development. I typically respond within 24 hours.</p>
-      <a href="mailto:kushalsedhain@gmail.com" class="btn-black">Send a Message →</a>
-    </div>
-  </div>
-</section>
+  </footer>
 
-<footer>
-  <span>Kushal Sedhai — Junior Embedded Firmware Engineer · 2025</span>
-  <span>Built in HTML · Hosted on GitHub Pages</span>
-</footer>
+  <script>
+    const pages = document.querySelectorAll('.page');
+    const navLinks = document.querySelectorAll('.nav-link');
 
-<script>
-/* ── CURSOR ── */
-const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
-animRing();
-
-/* ── TYPEWRITER ── */
-const roles=['Junior Embedded Firmware Engineer','STM32 · ARM Cortex-M Developer','PCB Designer — KiCad','Mechatronics MEng · UBC','Low-Level Peripheral Enthusiast'];
-let ri=0,ci=0,del=false;
-const tw=document.getElementById('typewriter');
-function type(){
-  const r=roles[ri];
-  if(!del){
-    tw.textContent=r.slice(0,++ci);
-    if(ci===r.length){del=true;setTimeout(type,1800);return}
-    setTimeout(type,55);
-  } else {
-    tw.textContent=r.slice(0,--ci);
-    if(ci===0){del=false;ri=(ri+1)%roles.length;setTimeout(type,400);return}
-    setTimeout(type,28);
-  }
-}
-setTimeout(type,1400);
-
-/* ── TERMINAL ── */
-const lines=[
-  {t:'prompt',txt:'kushal@stm32:~ $ whoami'},
-  {t:'out hi',txt:'  Kushal Sedhai — Junior Embedded Firmware Engineer'},
-  {t:'out',txt:'  MEng Mechatronics · University of British Columbia'},
-  {t:'prompt',txt:'kushal@stm32:~ $ cat focus.txt'},
-  {t:'out hi',txt:'  STM32 (ARM Cortex-M) firmware development'},
-  {t:'out hi',txt:'  Low-level peripheral interfacing — LL APIs'},
-  {t:'out hi',txt:'  Hardware-software integration & debugging'},
-  {t:'prompt',txt:'kushal@stm32:~ $ cat learning_progression.txt'},
-  {t:'out',txt:'  [done]  C · GPIO · UART · Timers · ADC · Interrupts'},
-  {t:'out warn',txt:'  [now]   DMA — circular buffers, peripheral-to-memory'},
-  {t:'out',txt:'  [next]  SPI · I2C · RTOS'},
-  {t:'prompt',txt:'kushal@stm32:~ $ echo $STATUS'},
-  {t:'out hi',txt:'  Seeking: Junior Firmware Engineer roles across Canada'},
-  {t:'prompt',txt:'kushal@stm32:~ $ _'},
-];
-let li=0;
-function buildTerm(){
-  const tb=document.getElementById('termBody');
-  if(li>=lines.length)return;
-  const l=lines[li++];
-  const span=document.createElement('span');
-  span.className='term-line shown '+(l.t==='prompt'?'term-prompt':l.t==='out hi'?'term-out hi':'term-out');
-  span.textContent=l.txt;
-  tb.appendChild(span);
-  tb.scrollTop=tb.scrollHeight;
-  setTimeout(buildTerm,li===1?0:160);
-}
-const termObs=new IntersectionObserver(en=>{if(en[0].isIntersecting){buildTerm();termObs.disconnect()}},{threshold:.3});
-const termEl=document.querySelector('.terminal');if(termEl)termObs.observe(termEl);
-
-/* ── SCROLL REVEAL ── */
-const revels=document.querySelectorAll('.reveal');
-const ro=new IntersectionObserver(ens=>{
-  ens.forEach((en,i)=>{
-    if(en.isIntersecting){
-      const d=parseInt(en.target.dataset.delay||0);
-      setTimeout(()=>en.target.classList.add('visible'),d);
-    }
-  });
-},{threshold:.12});
-revels.forEach(el=>ro.observe(el));
-
-/* ── SKILL BARS ── */
-const barObs=new IntersectionObserver(ens=>{
-  ens.forEach(en=>{
-    if(en.isIntersecting){
-      en.target.querySelectorAll('.sk-bar').forEach(b=>{
-        setTimeout(()=>{b.style.width=b.dataset.w+'%'},300);
+    function showPage(id) {
+      const targetId = id && document.getElementById(id) ? id : 'home';
+      pages.forEach(page => page.classList.toggle('active', page.id === targetId));
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        link.classList.toggle('active', href === '#' + targetId);
       });
-    }
-  });
-},{threshold:.3});
-document.querySelectorAll('.skill-card').forEach(c=>barObs.observe(c));
-
-/* ── PHOTO UPLOAD (hero) ── */
-function loadHeroPhoto(input){
-  const f=input.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    const img=document.getElementById('heroPhotoImg');
-    img.src=e.target.result;img.style.display='block';
-    document.getElementById('photoPlaceholder').style.display='none';
-  };
-  r.readAsDataURL(f);
-}
-
-/* ── PROJECT IMAGE UPLOAD ── */
-function triggerUpload(e,id){e.preventDefault();e.stopPropagation();document.getElementById(id).click();}
-function loadProjPhoto(input,zoneId){
-  const f=input.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{
-    const zone=document.getElementById(zoneId);
-    const num=zoneId.replace('zone','');
-    const img=document.getElementById('proj'+num+'img');
-    const svg=document.getElementById('proj'+num+'svg');
-    if(img){img.src=ev.target.result;img.classList.add('show');}
-    if(svg)svg.style.display='none';
-    const hint=zone.querySelector('.upload-hint');
-    const icon=zone.querySelector('.upload-icon');
-    if(hint)hint.style.display='none';
-    if(icon)icon.style.display='none';
-  };
-  r.readAsDataURL(f);
-}
-
-/* ── 3D PCB CANVAS ── */
-(function(){
-  const canvas=document.getElementById('pcb3d');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  let W=canvas.parentElement.clientWidth,H=420;
-  canvas.width=W;canvas.height=H;
-
-  // board geometry
-  const BW=340,BH=200,BD=18;// width,height,depth(thickness)
-  let rotX=0.35,rotY=0.5,autoRotY=0;
-  let dragging=false,lastX=0,lastY=0;
-  let zoom=1,targetZoom=1;
-
-  // project 3d point
-  function project(x,y,z){
-    // simple oblique projection
-    const rx=x*Math.cos(rotY)-z*Math.sin(rotY);
-    const rz=x*Math.sin(rotY)+z*Math.cos(rotY);
-    const ry2=y*Math.cos(rotX)-rz*Math.sin(rotX);
-    const rz2=y*Math.sin(rotX)+rz*Math.cos(rotX);
-    const sc=zoom*(600/(600+rz2+300));
-    return [W/2+rx*sc, H/2+ry2*sc];
-  }
-
-  // component positions [x,y] relative to board center, size [w,h], color, label
-  const comps=[
-    {x:0,y:0,w:60,h:48,col:'#1a3a4a',lcol:'#00cfff',lbl:'STM32'},
-    {x:-90,y:-40,w:28,h:14,col:'#1a2a1a',lcol:'#00ffa3',lbl:'XTAL'},
-    {x:90,y:-50,w:22,h:22,col:'#1a1a2a',lcol:'#7b68ee',lbl:'LDO'},
-    {x:-110,y:30,w:12,h:24,col:'#2a1a1a',lcol:'#ff6b35',lbl:''},
-    {x:80,y:50,w:18,h:8,col:'#1a2a1a',lcol:'#00ffa3',lbl:''},
-    {x:-60,y:60,w:10,h:10,col:'#2a2a1a',lcol:'#ffbd2e',lbl:''},
-    {x:120,y:20,w:14,h:28,col:'#1a2a2a',lcol:'#00cfff',lbl:'USB'},
-  ];
-
-  function drawBoard(){
-    ctx.clearRect(0,0,W,H);
-
-    const hw=BW/2,hh=BH/2;
-    // 8 corners of the board box
-    const pts=[
-      [-hw,-hh,0],[ hw,-hh,0],[ hw, hh,0],[-hw, hh,0],
-      [-hw,-hh,BD],[ hw,-hh,BD],[ hw, hh,BD],[-hw, hh,BD],
-    ].map(p=>project(...p));
-
-    // side faces (darker green)
-    ctx.fillStyle='#042810';
-    // bottom face
-    ctx.beginPath();[4,5,6,7].forEach((i,j)=>{j===0?ctx.moveTo(...pts[i]):ctx.lineTo(...pts[i])});
-    ctx.closePath();ctx.fill();
-    // front face
-    ctx.beginPath();[3,2,6,7].forEach((i,j)=>{j===0?ctx.moveTo(...pts[i]):ctx.lineTo(...pts[i])});
-    ctx.closePath();ctx.fill();
-    // right face
-    ctx.fillStyle='#032010';
-    ctx.beginPath();[1,2,6,5].forEach((i,j)=>{j===0?ctx.moveTo(...pts[i]):ctx.lineTo(...pts[i])});
-    ctx.closePath();ctx.fill();
-
-    // PCB top face (green)
-    ctx.fillStyle='#073a18';
-    ctx.beginPath();[0,1,2,3].forEach((i,j)=>{j===0?ctx.moveTo(...pts[i]):ctx.lineTo(...pts[i])});
-    ctx.closePath();ctx.fill();
-
-    // board edge outline
-    ctx.strokeStyle='rgba(0,255,163,0.25)';ctx.lineWidth=1;
-    [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]].forEach(([a,b])=>{
-      ctx.beginPath();ctx.moveTo(...pts[a]);ctx.lineTo(...pts[b]);ctx.stroke();
-    });
-
-    // grid on top face
-    ctx.strokeStyle='rgba(0,255,163,0.06)';ctx.lineWidth=0.5;
-    for(let gx=-hw;gx<=hw;gx+=24){
-      const a=project(gx,-hh,0),b=project(gx,hh,0);
-      ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();
-    }
-    for(let gy=-hh;gy<=hh;gy+=24){
-      const a=project(-hw,gy,0),b=project(hw,gy,0);
-      ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // traces on top
-    const traces=[
-      [[-hw*0.6,-hh*0.4,0],[0,0,0],'rgba(0,255,163,0.35)'],
-      [[0,0,0],[hw*0.7,hh*0.3,0],'rgba(0,255,163,0.35)'],
-      [[-hw*0.4,hh*0.5,0],[0,0,0],'rgba(0,207,255,0.3)'],
-      [[hw*0.5,-hh*0.6,0],[hw*0.2,0,0],'rgba(0,207,255,0.3)'],
-    ];
-    traces.forEach(([a,b,col])=>{
-      ctx.strokeStyle=col;ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.moveTo(...project(...a));ctx.lineTo(...project(...b));ctx.stroke();
-    });
-
-    // via dots
-    const vias=[[-120,-70],[-80,60],[100,-50],[130,40],[0,-80]];
-    vias.forEach(([vx,vy])=>{
-      const [px,py]=project(vx,vy,0);
-      ctx.beginPath();ctx.arc(px,py,2.5,0,Math.PI*2);
-      ctx.strokeStyle='rgba(0,255,163,0.5)';ctx.lineWidth=1;
-      ctx.stroke();
-    });
-
-    // components
-    comps.forEach(c=>{
-      const hw2=c.w/2,hh2=c.h/2;
-      const cp=[
-        [c.x-hw2,c.y-hh2,1],[c.x+hw2,c.y-hh2,1],[c.x+hw2,c.y+hh2,1],[c.x-hw2,c.y+hh2,1]
-      ].map(p=>project(...p));
-      ctx.fillStyle=c.col;
-      ctx.beginPath();cp.forEach((p,i)=>i===0?ctx.moveTo(...p):ctx.lineTo(...p));
-      ctx.closePath();ctx.fill();
-      ctx.strokeStyle=c.lcol;ctx.lineWidth=.8;ctx.globalAlpha=.6;
-      ctx.beginPath();cp.forEach((p,i)=>i===0?ctx.moveTo(...p):ctx.lineTo(...p));
-      ctx.closePath();ctx.stroke();
-      ctx.globalAlpha=1;
-      if(c.lbl){
-        const mid=project(c.x,c.y,1.5);
-        ctx.fillStyle=c.lcol;
-        ctx.font=`${Math.max(7,9*zoom)}px JetBrains Mono`;
-        ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.globalAlpha=.8;
-        ctx.fillText(c.lbl,...mid);
-        ctx.globalAlpha=1;
-      }
-    });
-
-    // header pins (left side)
-    for(let i=0;i<18;i++){
-      const py=-hh+20+i*10;
-      const p1=project(-hw-6,py,BD/2);
-      const p2=project(-hw,py,BD/2);
-      ctx.fillStyle='#c0a020';
-      ctx.beginPath();ctx.arc(...p1,2,0,Math.PI*2);ctx.fill();
-      ctx.strokeStyle='#c0a020';ctx.lineWidth=1;ctx.globalAlpha=.5;
-      ctx.beginPath();ctx.moveTo(...p1);ctx.lineTo(...p2);ctx.stroke();
-      ctx.globalAlpha=1;
-    }
-    // right side
-    for(let i=0;i<18;i++){
-      const py=-hh+20+i*10;
-      const p1=project(hw+6,py,BD/2);
-      const p2=project(hw,py,BD/2);
-      ctx.fillStyle='#c0a020';
-      ctx.beginPath();ctx.arc(...p1,2,0,Math.PI*2);ctx.fill();
+    function onHashChange() {
+      showPage(location.hash.replace('#', ''));
     }
 
-    // silkscreen text
-    const [tx,ty]=project(-hw+10,-hh+10,0.5);
-    ctx.fillStyle='rgba(255,255,255,0.15)';
-    ctx.font='8px JetBrains Mono';ctx.textAlign='left';ctx.textBaseline='top';
-    ctx.fillText('KUSHAL SEDHAI — STM32 BOARD',tx,ty);
-  }
-
-  let frame=0;
-  function animate(){
-    requestAnimationFrame(animate);
-    if(!dragging){autoRotY+=0.004;rotY=autoRotY;}
-    zoom+=(targetZoom-zoom)*.08;
-    frame++;
-    // animate component glow (simple timing)
-    drawBoard();
-  }
-  animate();
-
-  // drag
-  canvas.addEventListener('mousedown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;autoRotY=rotY;});
-  window.addEventListener('mouseup',()=>{dragging=false;});
-  window.addEventListener('mousemove',e=>{
-    if(!dragging)return;
-    rotY+=(e.clientX-lastX)*.007;
-    rotX+=(e.clientY-lastY)*.007;
-    rotX=Math.max(-0.8,Math.min(0.8,rotX));
-    autoRotY=rotY;
-    lastX=e.clientX;lastY=e.clientY;
-  });
-  canvas.addEventListener('wheel',e=>{
-    e.preventDefault();
-    targetZoom=Math.max(0.5,Math.min(2,targetZoom-e.deltaY*.001));
-  });
-  // touch
-  let lt=null;
-  canvas.addEventListener('touchstart',e=>{lt=e.touches[0];dragging=true;autoRotY=rotY;},{passive:true});
-  canvas.addEventListener('touchend',()=>{dragging=false;lt=null;});
-  canvas.addEventListener('touchmove',e=>{
-    if(!lt)return;
-    const t=e.touches[0];
-    rotY+=(t.clientX-lt.clientX)*.007;
-    rotX+=(t.clientY-lt.clientY)*.007;
-    rotX=Math.max(-0.8,Math.min(0.8,rotX));
-    autoRotY=rotY;lt=t;
-  },{passive:true});
-
-  // resize
-  window.addEventListener('resize',()=>{
-    W=canvas.parentElement.clientWidth;canvas.width=W;
-  });
-})();
-</script>
+    window.addEventListener('hashchange', onHashChange);
+    onHashChange();
+  </script>
 </body>
 </html>
