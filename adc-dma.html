@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ADC + DMA Data Acquisition — Kushal Sedhai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060810;--bg1:#090c14;--bg2:#0c1018;--bg3:#101520;
+  --green:#00ffa3;--blue:#00cfff;--orange:#ff6b35;
+  --border:rgba(0,255,163,0.12);
+  --text:#c8ddd6;--muted:#4a6860;
+  --mono:'JetBrains Mono',monospace;--syne:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--syne);overflow-x:hidden;cursor:none}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,163,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,163,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+#cursor{position:fixed;width:10px;height:10px;border:1.5px solid var(--green);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(0,255,163,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .08s linear}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid var(--border);background:rgba(6,8,16,.85);backdrop-filter:blur(16px)}
+.nav-id{font-family:var(--mono);font-size:13px;color:var(--green);letter-spacing:.05em;text-decoration:none}
+.nav-id span{color:var(--muted)}
+.nav-back{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:.12em;transition:color .2s}
+.nav-back:hover{color:var(--green)}
+
+.section{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:80px 48px}
+.crumb{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.12em;margin-bottom:20px}
+.crumb a{color:var(--muted);text-decoration:none}.crumb a:hover{color:var(--green)}
+.proj-hero-h{font-family:var(--syne);font-size:clamp(38px,6.5vw,76px);font-weight:800;text-transform:uppercase;line-height:.95;color:#fff;margin-bottom:24px}
+.proj-hero-h em{color:var(--green);font-style:normal}
+.meta-row{display:flex;gap:40px;flex-wrap:wrap;margin-bottom:32px}
+.meta-lbl{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
+.meta-val{font-family:var(--mono);font-size:13px;color:var(--green)}
+.hero-desc{max-width:680px;font-size:15px;line-height:1.8;color:var(--muted);border-left:2px solid var(--border);padding-left:20px}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:40px}
+.card{background:var(--bg1);border:1px solid var(--border);padding:36px;transition:border-color .3s}
+.card:hover{border-color:rgba(0,255,163,.3)}
+.card-lbl{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
+.card-title{font-family:var(--syne);font-size:22px;font-weight:700;text-transform:uppercase;color:#fff;margin-bottom:14px}
+.card-body{font-size:13px;color:var(--muted);line-height:1.75}
+.card-body p+p{margin-top:10px}
+ul.slist{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:10px}
+ul.slist li{display:flex;gap:10px;font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.5}
+ul.slist li::before{content:'→';color:var(--green);flex-shrink:0}
+
+.full-card{background:var(--bg1);border:1px solid var(--border);padding:36px;margin-bottom:40px}
+
+/* animated waveform canvas */
+.wave-wrap{background:var(--bg2);border:1px solid var(--border);padding:0;display:flex;align-items:stretch;margin-bottom:40px;overflow:hidden;position:relative}
+#waveCanvas{display:block;width:100%}
+.wave-legend{
+  position:absolute;top:16px;left:24px;
+  display:flex;gap:20px;
+}
+.wleg{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;color:var(--muted)}
+.wleg-dot{width:16px;height:2px;border-radius:1px}
+
+/* firmware flow */
+.fw-flow{display:flex;align-items:stretch;gap:3px;margin-bottom:40px;overflow-x:auto}
+.fw-node{
+  background:var(--bg2);border:1px solid var(--border);
+  padding:20px 18px;flex:1;min-width:140px;
+  position:relative;
+  transition:border-color .3s;
+}
+.fw-node:hover{border-color:rgba(0,255,163,.35)}
+.fw-node::after{
+  content:'→';
+  position:absolute;right:-14px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:14px;color:var(--green);
+  z-index:1;
+}
+.fw-node:last-child::after{display:none}
+.fw-node-num{font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:.15em;margin-bottom:8px}
+.fw-node-title{font-family:var(--syne);font-size:14px;font-weight:700;text-transform:uppercase;color:#fff;margin-bottom:6px}
+.fw-node-desc{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5}
+
+/* debug block */
+.debug-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-left:2px solid var(--orange);
+  padding:18px 22px;margin-bottom:8px;
+  transition:border-left-color .2s;
+}
+.debug-item:hover{border-left-color:var(--green)}
+.debug-title{font-family:var(--syne);font-size:14px;font-weight:700;text-transform:uppercase;color:#fff;margin-bottom:6px}
+.debug-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* image upload */
+.img-upload-zone{background:var(--bg2);border:1px dashed rgba(0,255,163,.2);height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;margin-bottom:40px;position:relative;overflow:hidden;transition:border-color .3s}
+.img-upload-zone:hover{border-color:rgba(0,255,163,.4)}
+.img-upload-zone input{display:none}
+.upload-lbl{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.12em;text-align:center;line-height:1.6}
+.img-upload-zone:hover .upload-lbl{color:var(--green)}
+.img-upload-zone .uploaded-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.img-upload-zone .uploaded-img.show{display:block}
+
+.stag{font-family:var(--mono);font-size:9px;padding:4px 10px;border:1px solid var(--border);color:var(--muted);letter-spacing:.08em;display:inline-block;margin:3px 3px 0 0}
+.stag.lit{border-color:rgba(0,255,163,.35);color:var(--green)}
+.stag.blu{border-color:rgba(0,207,255,.3);color:var(--blue)}
+.stag.org{border-color:rgba(255,107,53,.3);color:var(--orange)}
+
+.btn-ghost{display:inline-flex;align-items:center;gap:10px;padding:12px 26px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;background:transparent;color:var(--green);border:1px solid var(--border);transition:all .2s;cursor:none}
+.btn-ghost:hover{border-color:var(--green);background:rgba(0,255,163,.05)}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted)}
+
+@media(max-width:768px){nav,.section{padding-left:20px;padding-right:20px}.two-col{grid-template-columns:1fr}.fw-flow{flex-direction:column}}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+
+<nav>
+  <a href="../index.html" class="nav-id">ks<span>@firmware</span>:~</a>
+  <a href="../index.html#projects" class="nav-back">← All Projects</a>
+</nav>
+
+<div class="section" style="padding-top:100px">
+  <div class="crumb reveal"><a href="../index.html">Home</a> / <a href="../index.html#projects">Projects</a> / Firmware / ADC + DMA</div>
+  <h1 class="proj-hero-h reveal">STM32 ADC + DMA<br><em>Data Acquisition</em></h1>
+  <div class="meta-row reveal">
+    <div><div class="meta-lbl">Category</div><div class="meta-val">Firmware Development</div></div>
+    <div><div class="meta-lbl">MCU</div><div class="meta-val">STM32F446RE (Cortex-M4)</div></div>
+    <div><div class="meta-lbl">Peripherals</div><div class="meta-val">ADC · DMA · UART</div></div>
+    <div><div class="meta-lbl">Debugger</div><div class="meta-val">ST-LINK · RealTerm</div></div>
+  </div>
+  <p class="hero-desc reveal">
+    Multi-channel analog data acquisition using ADC scan mode and DMA circular buffers on an STM32F446RE. Data is streamed over UART in real time for visualization in RealTerm. The goal was to reduce CPU load by letting DMA handle transfers autonomously while the MCU stays free for other work.
+  </p>
+</div>
+
+<!-- Image upload zone -->
+<div class="section" style="padding-top:0;padding-bottom:0">
+  <div class="img-upload-zone reveal" id="adcImgZone" onclick="document.getElementById('adcImgInput').click()">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="opacity:.2">
+      <rect x="6" y="14" width="36" height="26" rx="2" stroke="#00ffa3" stroke-width="1.5"/>
+      <path d="M24 9v14M19 13l5-5 5 5" stroke="#00ffa3" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div class="upload-lbl">CLICK TO ADD WAVEFORM SCREENSHOTS / DEBUG CAPTURES<br>JPG · PNG · WEBP</div>
+    <input type="file" id="adcImgInput" accept="image/*" onchange="loadZoneImg(this,'adcImgZone')">
+    <img class="uploaded-img" id="adcImg" src="" alt="">
+  </div>
+</div>
+
+<!-- Animated waveform -->
+<div class="section" style="padding-top:48px;padding-bottom:0">
+  <div class="wave-wrap reveal" style="height:200px">
+    <canvas id="waveCanvas" height="200"></canvas>
+    <div class="wave-legend">
+      <div class="wleg"><div class="wleg-dot" style="background:#00ffa3"></div>CH1</div>
+      <div class="wleg"><div class="wleg-dot" style="background:#00cfff"></div>CH2</div>
+      <div class="wleg"><div class="wleg-dot" style="background:#ff6b35"></div>CH3</div>
+    </div>
+  </div>
+</div>
+
+<!-- Firmware flow -->
+<div class="section" style="padding-top:48px;padding-bottom:0">
+  <div class="card-lbl reveal" style="margin-bottom:16px">// Data Flow Pipeline</div>
+  <div class="fw-flow reveal">
+    <div class="fw-node">
+      <div class="fw-node-num">01</div>
+      <div class="fw-node-title">ADC Scan Mode</div>
+      <div class="fw-node-desc">Multiple channels sampled sequentially in a single trigger</div>
+    </div>
+    <div class="fw-node">
+      <div class="fw-node-num">02</div>
+      <div class="fw-node-title">DMA Transfer</div>
+      <div class="fw-node-desc">Peripheral-to-memory, circular mode — runs without CPU</div>
+    </div>
+    <div class="fw-node">
+      <div class="fw-node-num">03</div>
+      <div class="fw-node-title">Memory Buffer</div>
+      <div class="fw-node-desc">Raw ADC values stored in circular buffer, always fresh</div>
+    </div>
+    <div class="fw-node">
+      <div class="fw-node-num">04</div>
+      <div class="fw-node-title">Voltage Convert</div>
+      <div class="fw-node-desc">Raw 12-bit values mapped to real voltage (0–3.3V)</div>
+    </div>
+    <div class="fw-node">
+      <div class="fw-node-num">05</div>
+      <div class="fw-node-title">UART Stream</div>
+      <div class="fw-node-desc">Formatted data transmitted to RealTerm for visualization</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-top:48px">
+
+  <div class="two-col">
+    <div class="card reveal">
+      <div class="card-lbl">// System Overview</div>
+      <div class="card-title">What This Does</div>
+      <div class="card-body">
+        <p>The system continuously samples multiple analog channels and streams the data in real time — all without tying up the CPU. ADC scan mode handles sequential channel sampling. DMA circular mode handles the transfers autonomously.</p>
+        <p>Once DMA fills the buffer, the CPU reads the values, converts raw counts to voltage, and sends them over UART. The CPU is free for other tasks during the DMA transfer itself.</p>
+        <p>This is a foundational pattern in embedded data acquisition — understanding it well unlocks a lot of more complex firmware work downstream.</p>
+      </div>
+    </div>
+    <div class="card reveal">
+      <div class="card-lbl">// Hardware Setup</div>
+      <div class="card-title">System Spec</div>
+      <ul class="slist">
+        <li>STM32F446RE — ARM Cortex-M4, 180MHz</li>
+        <li>ADC in scan mode — multiple channels, single trigger</li>
+        <li>DMA in circular mode — peripheral-to-memory transfer</li>
+        <li>Continuous conversion mode enabled</li>
+        <li>12-bit resolution — 0 to 4095 raw, 0 to 3.3V converted</li>
+        <li>UART transmission to host PC</li>
+        <li>RealTerm used for real-time data display</li>
+        <li>ST-LINK debugger for bring-up and verification</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="full-card reveal">
+    <div class="card-lbl">// Firmware Architecture</div>
+    <div class="card-title" style="margin-bottom:28px">How It's Implemented</div>
+    <div class="two-col" style="margin-bottom:0">
+      <div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:10px">ADC Configuration</div>
+        <ul class="slist">
+          <li>Scan mode enabled for multi-channel sequential sampling</li>
+          <li>Continuous conversion mode — no manual retrigger needed</li>
+          <li>DMA request enabled on ADC peripheral</li>
+          <li>Each channel assigned a rank in the sequence</li>
+          <li>Sample time configured per channel sensitivity</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:10px">DMA Configuration</div>
+        <ul class="slist">
+          <li>Direction: peripheral to memory (ADC DR → buffer)</li>
+          <li>Circular mode — buffer wraps automatically</li>
+          <li>Half-word transfer size to match 12-bit ADC resolution</li>
+          <li>DMA complete callback used to trigger UART transmission</li>
+          <li>No CPU involvement during the transfer itself</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card reveal">
+      <div class="card-lbl">// Debugging</div>
+      <div class="card-title">Problems Encountered</div>
+      <div class="debug-item">
+        <div class="debug-title">Non-Continuous Data Transfer</div>
+        <div class="debug-desc">DMA was stopping after one complete buffer cycle. Root cause: circular mode not correctly enabled in DMA configuration. Fixed by correctly setting the circular bit in DMA stream config.</div>
+      </div>
+      <div class="debug-item">
+        <div class="debug-title">Peripheral Configuration Mismatch</div>
+        <div class="debug-desc">ADC scan mode and DMA were enabled independently but not linked correctly. The ADC DMA request enable bit was missing, so DMA was never triggered. Identified by stepping through registers in the debugger.</div>
+      </div>
+      <div class="debug-item">
+        <div class="debug-title">Output Verification</div>
+        <div class="debug-desc">Used ST-LINK live watch to confirm buffer was filling correctly before wiring up UART. Then verified voltage values against a known reference signal on the input.</div>
+      </div>
+    </div>
+    <div class="card reveal">
+      <div class="card-lbl">// Results</div>
+      <div class="card-title">What Worked</div>
+      <ul class="slist">
+        <li>Continuous real-time sampling across multiple channels</li>
+        <li>CPU load significantly reduced — DMA handles all transfers</li>
+        <li>Stable, reliable data streaming over UART</li>
+        <li>Accurate voltage conversion from raw ADC counts</li>
+        <li>System runs indefinitely without manual intervention</li>
+      </ul>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+        <div class="card-lbl" style="margin-bottom:10px">// Tech Stack</div>
+        <span class="stag lit">STM32F446RE</span>
+        <span class="stag lit">ADC Scan Mode</span>
+        <span class="stag lit">DMA Circular</span>
+        <span class="stag blu">UART</span>
+        <span class="stag">Embedded C</span>
+        <span class="stag">LL APIs</span>
+        <span class="stag">ST-LINK</span>
+        <span class="stag">RealTerm</span>
+        <span class="stag">STM32CubeIDE</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    <a href="../index.html#projects" class="btn-ghost">← All Projects</a>
+    <a href="bluepill-clone.html" class="btn-ghost">Next: PCB Design →</a>
+  </div>
+
+</div>
+
+<footer>
+  <span>ADC + DMA Data Acquisition — Kushal Sedhai</span>
+  <a href="../index.html" style="font-family:var(--mono);font-size:10px;color:var(--muted);text-decoration:none">← Portfolio</a>
+</footer>
+
+<script>
+// cursor
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}animRing();
+
+// reveal
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// image upload
+function loadZoneImg(input,zoneId){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const zone=document.getElementById(zoneId);
+    const img=zone.querySelector('.uploaded-img');
+    if(img){img.src=ev.target.result;img.classList.add('show');}
+    zone.querySelector('.upload-lbl').style.opacity='0';
+    const svg=zone.querySelector('svg');if(svg)svg.style.opacity='0';
+  };r.readAsDataURL(f);
+}
+
+// animated waveform
+(function(){
+  const c=document.getElementById('waveCanvas');if(!c)return;
+  const ctx=c.getContext('2d');
+  let W=c.parentElement.clientWidth,H=200;
+  c.width=W;c.height=H;
+  let t=0;
+  const channels=[
+    {col:'#00ffa3',freq:0.04,amp:55,offset:100,phase:0},
+    {col:'#00cfff',freq:0.027,amp:40,offset:100,phase:2.1},
+    {col:'#ff6b35',freq:0.018,amp:30,offset:100,phase:4.2},
+  ];
+
+  function draw(){
+    ctx.fillStyle='#0c1018';ctx.fillRect(0,0,W,H);
+
+    // grid
+    ctx.strokeStyle='rgba(0,255,163,.05)';ctx.lineWidth=.5;
+    for(let gx=0;gx<W;gx+=48){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke()}
+    for(let gy=0;gy<H;gy+=40){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke()}
+
+    // axis labels
+    ctx.font='8px JetBrains Mono';ctx.fillStyle='rgba(74,104,96,.5)';ctx.textAlign='left';
+    ['3.3V','2.5V','1.6V','0.8V','0V'].forEach((lbl,i)=>{ctx.fillText(lbl,4,20+i*38)});
+
+    // waveforms
+    channels.forEach(ch=>{
+      ctx.beginPath();
+      for(let x=0;x<W;x++){
+        const y=H/2-ch.amp*Math.sin(ch.freq*(x+t*60)+ch.phase)+Math.sin(ch.freq*0.3*(x+t*40)+ch.phase)*8;
+        x===0?ctx.moveTo(x,y+ch.offset-H/2):ctx.lineTo(x,y+ch.offset-H/2);
+      }
+      ctx.strokeStyle=ch.col;ctx.lineWidth=1.5;ctx.globalAlpha=.75;ctx.stroke();ctx.globalAlpha=1;
+    });
+
+    // DMA "packet" markers
+    const packetX=((t*40)%W);
+    ctx.beginPath();ctx.moveTo(packetX,0);ctx.lineTo(packetX,H);
+    ctx.strokeStyle='rgba(0,255,163,.15)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);
+    ctx.font='8px JetBrains Mono';ctx.fillStyle='rgba(0,255,163,.3)';ctx.textAlign='center';
+    ctx.fillText('DMA',packetX,H-8);
+
+    t+=0.012;
+    requestAnimationFrame(draw);
+  }
+  draw();
+  window.addEventListener('resize',()=>{W=c.parentElement.clientWidth;c.width=W});
+})();
+</script>
+</body>
+</html>
