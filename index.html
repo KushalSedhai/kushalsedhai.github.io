@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kushal Sedhai | Junior Embedded Firmware Engineer</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --accent: #0f172a;
+      --accent-2: #1e293b;
+      --chip: #eef2ff;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      --radius: 18px;
+      --maxw: 1150px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      width: min(var(--maxw), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-wrap {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--muted);
+      transition: 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .page { display: none; padding: 48px 0 70px; }
+    .page.active { display: block; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .card.pad { padding: 24px; }
+    .card.pad-lg { padding: 30px; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.2; }
+    .hero-title {
+      font-size: clamp(2.4rem, 5vw, 4.3rem);
+      margin: 0;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      font-size: clamp(1.15rem, 2vw, 1.6rem);
+      color: var(--accent-2);
+      font-weight: 600;
+    }
+
+    .lead { font-size: 1.05rem; color: var(--muted); }
+    .stack { display: grid; gap: 14px; }
+
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-weight: 600;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .section-title {
+      font-size: clamp(1.9rem, 3vw, 2.8rem);
+      margin: 0 0 10px;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      max-width: 820px;
+      margin-bottom: 28px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip {
+      background: var(--chip);
+      color: var(--accent-2);
+      border: 1px solid #dbeafe;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+    }
+
+    .list-box { display: grid; gap: 12px; }
+    .list-item {
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+    }
+
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .project-card .actions { margin-top: auto; padding-top: 16px; }
+
+    .project-links {
+      display: grid;
+      gap: 14px;
+    }
+
+    .project-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      transition: 0.2s ease;
+    }
+
+    .project-link:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+    .muted { color: var(--muted); }
+    .spacer { height: 22px; }
+
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .detail-section + .detail-section { margin-top: 18px; }
+    .detail-section h3 { margin: 0 0 12px; font-size: 1.25rem; }
+    .detail-section p { margin: 0 0 12px; color: var(--muted); }
+
+    .bullet-list {
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .bullet-list li {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+      color: var(--muted);
+    }
+
+    .image-placeholder {
+      min-height: 190px;
+      border: 1px dashed #94a3b8;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff, #f8fafc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 16px;
+    }
+
+    .timeline-item {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: white;
+    }
+
+    .timeline-item h3 { margin: 0 0 12px; }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      background: white;
+      padding: 22px 0 28px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .grid-3,
+      .grid-2,
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .page { padding: 34px 0 56px; }
+      .card.pad-lg { padding: 22px; }
+      .image-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <div class="brand">
+        <h1>Kushal Sedhai</h1>
+        <p>Junior Embedded Firmware Engineer</p>
+      </div>
+      <nav>
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#learning" class="nav-link">Learning Timeline</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="page active">
+      <div class="container">
+        <div class="hero">
+          <div>
+            <div class="eyebrow">Open to opportunities and relocation across Canada</div>
+            <h1 class="hero-title">Kushal Sedhai</h1>
+            <p class="subtitle">Junior Embedded Firmware Engineer</p>
+            <div class="stack lead" style="margin-top:22px;">
+              <p>I design and build embedded systems using STM32 (ARM Cortex-M), with a strong focus on low-level firmware, peripheral interfacing, and hardware-software integration.</p>
+              <p>My learning in embedded systems has been largely self-driven and built from the ground up. I have been working through real hardware problems, debugging communication issues, and understanding how microcontroller-based systems behave at a low level.</p>
+              <p>Most of my growth has come from building systems that did not work the first time. I have spent long hours debugging unstable communication, fixing timing issues, and understanding how different parts of a system interact.</p>
+              <p>What keeps me motivated is the moment when everything finally works—when communication stabilizes, data becomes reliable, and the system behaves exactly as expected after multiple iterations.</p>
+            </div>
+            <div class="btn-row">
+              <a class="btn primary nav-link" href="#projects">View Projects</a>
+              <a class="btn nav-link" href="#learning">Learning Timeline</a>
+              <a class="btn nav-link" href="#contact">Contact</a>
+            </div>
+          </div>
+          <div class="card pad-lg">
+            <h2 style="margin-top:0;">Focus Areas</h2>
+            <div class="list-box">
+              <div class="list-item">Embedded firmware development using STM32 (ARM Cortex-M)</div>
+              <div class="list-item">Low-level peripheral interfacing and control</div>
+              <div class="list-item">Hardware-software integration</div>
+              <div class="list-item">Debugging and system validation</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="card pad-lg" style="margin-bottom:22px;">
+          <div class="eyebrow">About</div>
+          <h2 class="section-title">Brief Introduction</h2>
+          <p class="section-intro" style="margin-bottom:0; max-width:none;">I recently completed my Master’s in Mechatronics Engineering at the University of British Columbia and developed a strong interest in embedded systems during that journey. I am now focused on growing as a Junior Embedded Firmware Engineer, combining low-level STM32 development with a broader background in hardware, controls, instrumentation, and mechanical system integration.</p>
+        </div>
+
+        <div class="card pad-lg" style="margin-bottom:22px;">
+          <div class="eyebrow">Skills Snapshot</div>
+          <h2 class="section-title">Core Skills</h2>
+          <div class="grid-2">
+            <div>
+              <h3>Embedded &amp; Firmware</h3>
+              <div class="chips">
+                <span class="chip">Embedded C/C++</span><span class="chip">STM32</span><span class="chip">ARM Cortex-M</span><span class="chip">Bare-metal concepts</span><span class="chip">Interrupts</span><span class="chip">Timers</span><span class="chip">Peripheral drivers</span><span class="chip">SPI</span><span class="chip">I2C</span><span class="chip">UART</span><span class="chip">RS-232</span><span class="chip">Debugging and bring-up</span>
+              </div>
+            </div>
+            <div>
+              <h3>Broader Engineering</h3>
+              <div class="chips">
+                <span class="chip">Python</span><span class="chip">MATLAB</span><span class="chip">PCB design</span><span class="chip">Electrical schematics</span><span class="chip">Signal conditioning</span><span class="chip">PLC programming</span><span class="chip">SCADA</span><span class="chip">PID control</span><span class="chip">SolidWorks</span><span class="chip">Fusion 360</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card pad-lg" style="margin-bottom:22px;">
+          <div class="eyebrow">Learning Timeline</div>
+          <h2 class="section-title">How I’ve been building my embedded foundation</h2>
+          <p class="section-intro">My embedded learning path has been step-by-step and intentional, with a strong focus on low-level understanding using STM32 and ARM Cortex-M systems.</p>
+          <div class="timeline">
+            <div class="timeline-item">
+              <h3>Foundations</h3>
+              <div class="chips"><span class="chip">C programming</span><span class="chip">Pointers</span><span class="chip">Memory concepts</span><span class="chip">Structures</span><span class="chip">Microcontroller basics</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>GPIO Development with LL APIs</h3>
+              <div class="chips"><span class="chip">Peripheral configuration</span><span class="chip">Digital input/output</span><span class="chip">Pull-up / pull-down</span><span class="chip">Floating input behavior</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>UART Development with LL APIs</h3>
+              <div class="chips"><span class="chip">Transmit and receive</span><span class="chip">Serial setup</span><span class="chip">Baud rate understanding</span><span class="chip">Terminal debugging</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>General Purpose Timer Development with LL APIs</h3>
+              <div class="chips"><span class="chip">Prescaler</span><span class="chip">Auto-reload</span><span class="chip">Periodic timing</span><span class="chip">Timer-driven behavior</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>ADC Driver Development</h3>
+              <div class="chips"><span class="chip">Analog sampling</span><span class="chip">Channel configuration</span><span class="chip">Conversion flow</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>Interrupt Programming</h3>
+              <div class="chips"><span class="chip">EXTI</span><span class="chip">Asynchronous input handling</span><span class="chip">Callback-driven thinking</span></div>
+            </div>
+            <div class="timeline-item">
+              <h3>DMA Development (Current Focus)</h3>
+              <div class="chips"><span class="chip">Peripheral-to-memory transfer</span><span class="chip">Reduced CPU load</span><span class="chip">Continuous streaming</span><span class="chip">ADC integration</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card pad-lg">
+          <div class="eyebrow">Featured Work</div>
+          <h2 class="section-title">Selected Projects</h2>
+          <p class="section-intro">These projects reflect how I think about engineering: firmware depth, hardware awareness, and full system integration.</p>
+          <div class="grid-3">
+            <div class="card pad project-card">
+              <h3>STM32 ADC + DMA Multi-Channel Data Acquisition System</h3>
+              <p class="muted">Efficient multi-channel analog data acquisition using ADC and DMA, with UART streaming for real-time monitoring in RealTerm.</p>
+              <div class="chips">
+                <span class="chip">STM32F446RE</span>
+                <span class="chip">ADC</span>
+                <span class="chip">DMA</span>
+                <span class="chip">UART</span>
+              </div>
+              <div class="actions"><a class="btn nav-link" href="#project-adc-dma">Open Project</a></div>
+            </div>
+            <div class="card pad project-card">
+              <h3>Custom STM32F1 Development Board (KiCad)</h3>
+              <p class="muted">A simplified Blue Pill-style STM32F1 board designed to practice real PCB design considerations, including power integrity and layout discipline.</p>
+              <div class="chips">
+                <span class="chip">KiCad</span>
+                <span class="chip">STM32F1</span>
+                <span class="chip">AMS1117</span>
+                <span class="chip">Ground Plane</span>
+              </div>
+              <div class="actions"><a class="btn nav-link" href="#project-stm32-pcb">Open Project</a></div>
+            </div>
+            <div class="card pad project-card">
+              <h3>3-Axis Motion Control System for a DED Machine</h3>
+              <p class="muted">A system-level project integrating MATLAB control, UART communication, SPI motor control, Arduino-based controllers, and a custom PCB.</p>
+              <div class="chips">
+                <span class="chip">Arduino</span>
+                <span class="chip">MATLAB</span>
+                <span class="chip">SPI</span>
+                <span class="chip">UART</span>
+              </div>
+              <div class="actions"><a class="btn nav-link" href="#project-ded">Open Project</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="page">
+      <div class="container">
+        <div class="eyebrow">About</div>
+        <h2 class="section-title">Brief Introduction</h2>
+        <div class="card pad-lg">
+          <p>I recently completed my Master’s in Mechatronics Engineering at the University of British Columbia and developed a strong interest in embedded systems during that journey.</p>
+          <p>I am now focused on growing as a <strong>Junior Embedded Firmware Engineer</strong>, combining low-level STM32 development with a broader background in hardware, controls, instrumentation, and mechanical system integration.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="page">
+      <div class="container">
+        <div class="eyebrow">Skills</div>
+        <h2 class="section-title">Technical areas I work across</h2>
+        <p class="section-intro">My strongest current direction is embedded firmware, supported by broader experience in hardware, controls, instrumentation, automation, and mechanical system development.</p>
+        <div class="grid-2">
+          <div class="card pad-lg">
+            <h3>Embedded &amp; Firmware</h3>
+            <div class="chips">
+              <span class="chip">Embedded C/C++</span><span class="chip">STM32</span><span class="chip">ARM Cortex-M based systems</span><span class="chip">Bare-metal concepts</span><span class="chip">Interrupts</span><span class="chip">Timers</span><span class="chip">Peripheral drivers</span><span class="chip">SPI</span><span class="chip">I2C</span><span class="chip">UART</span><span class="chip">RS-232</span><span class="chip">Debugging and board bring-up</span>
+            </div>
+          </div>
+          <div class="card pad-lg">
+            <h3>Programming &amp; Automation</h3>
+            <div class="chips">
+              <span class="chip">C/C++</span><span class="chip">Python</span><span class="chip">MATLAB</span><span class="chip">Scripting</span><span class="chip">Algorithm implementation</span><span class="chip">Workflow automation</span><span class="chip">Microsoft Excel (advanced)</span><span class="chip">VBA</span><span class="chip">Git / GitHub</span><span class="chip">Jira</span><span class="chip">Confluence</span>
+            </div>
+          </div>
+          <div class="card pad-lg">
+            <h3>Electrical &amp; Instrumentation</h3>
+            <div class="chips">
+              <span class="chip">Electrical schematics</span><span class="chip">Wiring diagrams</span><span class="chip">PCB design</span><span class="chip">Sensors (RTD, pressure, ultrasonic)</span><span class="chip">Signal conditioning</span><span class="chip">Lab instrumentation</span>
+            </div>
+          </div>
+          <div class="card pad-lg">
+            <h3>Controls, PLC &amp; HMI</h3>
+            <div class="chips">
+              <span class="chip">PLC programming</span><span class="chip">SCADA systems</span><span class="chip">HMI design (VTScada)</span><span class="chip">Modbus TCP</span><span class="chip">Industrial I/O</span><span class="chip">PID control</span>
+            </div>
+          </div>
+          <div class="card pad-lg" style="grid-column: 1 / -1;">
+            <h3>Mechanical Design</h3>
+            <div class="chips">
+              <span class="chip">SolidWorks</span><span class="chip">Fusion 360</span><span class="chip">CAD modeling</span><span class="chip">Mechanical assemblies</span><span class="chip">Prototyping</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="page">
+      <div class="container">
+        <div class="eyebrow">Projects</div>
+        <h2 class="section-title">Organized by how I approach engineering</h2>
+        <p class="section-intro">My work is organized into firmware development, hardware work, and embedded systems integration. This structure reflects how I think about engineering—understanding firmware deeply, designing hardware carefully, and integrating both into complete working systems.</p>
+        <div class="grid-3">
+          <div class="card pad-lg project-card">
+            <h3>Firmware Development</h3>
+            <p class="muted">Projects focused on low-level firmware, peripheral configuration, data movement, and real-time embedded behavior.</p>
+            <div class="actions"><a class="btn nav-link" href="#firmware">Open Section</a></div>
+          </div>
+          <div class="card pad-lg project-card">
+            <h3>Hardware Work</h3>
+            <p class="muted">Projects focused on board-level thinking, PCB design, power integrity, manufacturability, and hardware support around microcontrollers.</p>
+            <div class="actions"><a class="btn nav-link" href="#hardware">Open Section</a></div>
+          </div>
+          <div class="card pad-lg project-card">
+            <h3>Embedded Systems</h3>
+            <p class="muted">Projects that combine firmware, hardware, communications, control, and physical systems into complete working setups.</p>
+            <div class="actions"><a class="btn nav-link" href="#systems">Open Section</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="firmware" class="page">
+      <div class="container">
+        <div class="eyebrow">Projects</div>
+        <h2 class="section-title">Firmware Development</h2>
+        <p class="section-intro">Projects focused on low-level firmware, peripheral configuration, data movement, and embedded behavior.</p>
+        <div class="project-links">
+          <a class="project-link nav-link" href="#project-adc-dma">
+            <div>
+              <h3 style="margin:0 0 8px;">STM32 ADC + DMA Multi-Channel Data Acquisition System</h3>
+              <p class="muted" style="margin:0;">Efficient multi-channel analog data acquisition using ADC and DMA, with UART streaming for real-time monitoring in RealTerm.</p>
+            </div>
+            <span>Open</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="hardware" class="page">
+      <div class="container">
+        <div class="eyebrow">Projects</div>
+        <h2 class="section-title">Hardware Work</h2>
+        <p class="section-intro">Projects focused on board-level thinking, PCB design, power integrity, and manufacturability.</p>
+        <div class="project-links">
+          <a class="project-link nav-link" href="#project-stm32-pcb">
+            <div>
+              <h3 style="margin:0 0 8px;">Custom STM32F1 Development Board (KiCad)</h3>
+              <p class="muted" style="margin:0;">A simplified Blue Pill-style board designed to practice real PCB design considerations, including power integrity, layout discipline, and manufacturability.</p>
+            </div>
+            <span>Open</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="systems" class="page">
+      <div class="container">
+        <div class="eyebrow">Projects</div>
+        <h2 class="section-title">Embedded Systems</h2>
+        <p class="section-intro">Projects that integrate firmware, communications, hardware, control, and physical systems into complete working setups.</p>
+        <div class="project-links">
+          <a class="project-link nav-link" href="#project-ded">
+            <div>
+              <h3 style="margin:0 0 8px;">3-Axis Motion Control System for a Directed Energy Deposition (DED) Machine</h3>
+              <p class="muted" style="margin:0;">A system-level project integrating MATLAB control, UART communication, SPI motor control, Arduino-based controllers, and a custom PCB to coordinate multi-axis motion.</p>
+            </div>
+            <span>Open</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="project-adc-dma" class="page">
+      <div class="container">
+        <a href="#projects" class="btn nav-link" style="margin-bottom:18px; display:inline-flex;">Back to Projects</a>
+        <div class="detail-layout">
+          <div>
+            <div class="eyebrow">Project Detail</div>
+            <h2 class="section-title">STM32 ADC + DMA Multi-Channel Data Acquisition System</h2>
+            <p class="section-intro">This project was built to explore efficient multi-channel analog data acquisition on an STM32 microcontroller using ADC and DMA, and then transmit the acquired data over UART for real-time visualization in RealTerm.</p>
+            <div class="chips" style="margin-bottom:20px;">
+              <span class="chip">STM32F446RE Nucleo</span><span class="chip">ARM Cortex-M4</span><span class="chip">ADC</span><span class="chip">DMA</span><span class="chip">UART</span><span class="chip">ST-LINK</span><span class="chip">RealTerm</span>
+            </div>
+
+            <div class="detail-section card pad">
+              <h3>Overview</h3>
+              <p>The goal was not just to read analog values, but to understand how continuous sampling can be implemented more efficiently by offloading repetitive data movement from the CPU.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Platform and Tools</h3>
+              <ul class="bullet-list">
+                <li>Board: STM32F446RE Nucleo board</li>
+                <li>Debugger: ST-LINK debugger</li>
+                <li>Microcontroller class: STM32 / ARM Cortex-M4</li>
+                <li>Visualization tool: RealTerm</li>
+                <li>Development context: peripheral-level embedded firmware development</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>What the Project Does</h3>
+              <p>The system samples multiple analog input channels using the ADC peripheral. Instead of manually reading every conversion result in software, DMA is used to automatically transfer sampled ADC values into memory.</p>
+              <p>The data is stored in a circular buffer so that sampling can continue continuously without constant CPU involvement. Once the data is available in memory, it is sent out over UART so that the sampled values can be monitored in RealTerm.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Technical Details</h3>
+              <ul class="bullet-list">
+                <li>Configured the ADC to sample multiple channels in scan mode</li>
+                <li>Used DMA in circular mode to continuously transfer ADC conversion results to memory</li>
+                <li>Stored conversion results in a memory buffer, allowing new samples to overwrite old ones in a continuous loop</li>
+                <li>Used UART transmission to stream ADC readings to a host PC</li>
+                <li>Visualized the data in RealTerm for real-time observation and debugging</li>
+                <li>Peripheral-to-memory DMA transfer</li>
+                <li>Continuous conversion mode</li>
+                <li>Conversion of raw ADC values into voltage</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Firmware Concepts Demonstrated</h3>
+              <ul class="bullet-list">
+                <li>ADC multi-channel scan configuration</li>
+                <li>DMA peripheral-to-memory transfer</li>
+                <li>Circular buffering for continuous acquisition</li>
+                <li>UART-based telemetry and data streaming</li>
+                <li>Buffer management and data formatting for serial output</li>
+                <li>Peripheral coordination across ADC, DMA, and UART</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Debugging and Development Experience</h3>
+              <p>A major part of this project was understanding how all the pieces interact and why data flow may stop or behave unexpectedly if one part is misconfigured.</p>
+              <p>It required attention to conversion mode behavior, DMA configuration, buffer sizing, UART output formatting, and timing and synchronization between peripherals.</p>
+              <p>Using the ST-LINK debugger and serial output through RealTerm, I was able to inspect system behavior and verify whether data was being sampled, moved, and transmitted correctly.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Results</h3>
+              <ul class="bullet-list">
+                <li>Continuous real-time sampling achieved</li>
+                <li>Reduced CPU load using DMA</li>
+                <li>Stable and reliable data streaming</li>
+              </ul>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Image / Visual Space</h3>
+              <div class="image-placeholder">Waveform screenshot, UART output snapshot from RealTerm, debugger screenshot, or a simple block diagram showing ADC → DMA → Buffer → UART</div>
+              <div class="spacer"></div>
+              <div class="image-grid">
+                <div class="image-placeholder">Image</div>
+                <div class="image-placeholder">Image</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="project-stm32-pcb" class="page">
+      <div class="container">
+        <a href="#projects" class="btn nav-link" style="margin-bottom:18px; display:inline-flex;">Back to Projects</a>
+        <div class="detail-layout">
+          <div>
+            <div class="eyebrow">Project Detail</div>
+            <h2 class="section-title">Custom STM32F1 Development Board (KiCad)</h2>
+            <p class="section-intro">This project involved designing a simplified STM32F1 development board inspired by the Blue Pill form factor. The objective was to practice practical PCB design by creating a usable microcontroller board while applying proper power, layout, and manufacturability considerations.</p>
+            <div class="chips" style="margin-bottom:20px;">
+              <span class="chip">KiCad</span><span class="chip">STM32F1</span><span class="chip">AMS1117</span><span class="chip">JLCPCB</span><span class="chip">PCB Layout</span><span class="chip">Ground Plane</span>
+            </div>
+
+            <div class="detail-section card pad">
+              <h3>Overview</h3>
+              <p>The board was designed in KiCad and built using components available from the JLCPCB parts library, which made the design more realistic from a fabrication and assembly perspective.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Design Goals</h3>
+              <ul class="bullet-list">
+                <li>Create a compact STM32F1 development board</li>
+                <li>Include practical support circuitry required for stable microcontroller operation</li>
+                <li>Apply good PCB design practices rather than just making a schematic that works</li>
+                <li>Design around real manufacturing constraints and available assembly parts</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Key Hardware Features</h3>
+              <ul class="bullet-list">
+                <li>External oscillator for stable clock generation</li>
+                <li>Decoupling capacitors placed close to microcontroller power pins</li>
+                <li>Bulk capacitor for supply stability</li>
+                <li>Filtered analog supply path</li>
+                <li>No VBAT connection in this version</li>
+                <li>SPDT switch for BOOT0 pin selection</li>
+                <li>AMS1117 linear regulator for 3.3 V supply from USB input</li>
+                <li>Accessible ST-LINK programming pins</li>
+                <li>Exposed I2C pins</li>
+                <li>Exposed UART pins</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>PCB Layout Practices Applied</h3>
+              <ul class="bullet-list">
+                <li>Designed as a two-layer PCB</li>
+                <li>Used the bottom layer as a ground plane, which improves return paths and helps reduce noise</li>
+                <li>Placed decoupling capacitors physically close to the MCU power pins to improve local supply stability</li>
+                <li>Used bulk capacitance to support power input stability</li>
+                <li>Considered analog supply filtering for cleaner analog behavior</li>
+                <li>Routed with awareness of practical board organization and usability</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Technical Notes</h3>
+              <p>This project gave me exposure to several important board-level concepts: why decoupling placement matters, why a ground plane is beneficial on a two-layer board, how external clock support is added, how BOOT0 needs to be handled for normal boot and programming modes, how regulator choice and USB-fed power affect board architecture, and how manufacturability influences component selection.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Outcome</h3>
+              <p>This project represents more than just copying a common development board. It reflects my interest in understanding what goes into a usable microcontroller board at the hardware level.</p>
+              <p>It also helped connect firmware-oriented thinking with board-level realities such as power integrity, placement, grounding, and bring-up readiness.</p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Image / Visual Space</h3>
+              <div class="image-placeholder">PCB schematic screenshot</div>
+              <div class="spacer"></div>
+              <div class="image-grid">
+                <div class="image-placeholder">PCB layout screenshot</div>
+                <div class="image-placeholder">3D render or manufactured board photo</div>
+              </div>
+              <div class="spacer"></div>
+              <p class="muted">This project benefits strongly from visual documentation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="project-ded" class="page">
+      <div class="container">
+        <a href="#projects" class="btn nav-link" style="margin-bottom:18px; display:inline-flex;">Back to Projects</a>
+        <div class="detail-layout">
+          <div>
+            <div class="eyebrow">Project Detail</div>
+            <h2 class="section-title">3-Axis Motion Control System for a Directed Energy Deposition (DED) Machine</h2>
+            <p class="section-intro">This project involved the integration of firmware, control, electronics, and motion hardware for a 3-axis motion system used in a Directed Energy Deposition machine. It is one of my most complete system-level projects because it required coordinating software, microcontrollers, motor interfaces, and physical hardware into one working setup.</p>
+            <div class="chips" style="margin-bottom:20px;">
+              <span class="chip">Arduino</span><span class="chip">MATLAB</span><span class="chip">UART</span><span class="chip">SPI</span><span class="chip">Stepper Motors</span><span class="chip">Servo</span><span class="chip">Custom PCB</span>
+            </div>
+
+            <div class="detail-section card pad">
+              <h3>System Architecture</h3>
+              <p>The control system involved MATLAB, microcontrollers, motor drivers, motors, and a custom PCB. A control algorithm was implemented in MATLAB, which generated commands and sent them over UART to embedded controllers.</p>
+              <p>The controllers then translated those commands into motion outputs for the different axes.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Controller Breakdown</h3>
+              <ul class="bullet-list">
+                <li>One Arduino-based controller handled the X and Y axes</li>
+                <li>Another Arduino-based controller handled the Z axis</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Motion Hardware</h3>
+              <ul class="bullet-list">
+                <li>X and Y axes controlled through stepper motor drivers</li>
+                <li>Communication to stepper drivers performed over SPI from Arduino</li>
+                <li>Z axis controlled using a servo motor system with an integrated driver</li>
+                <li>The second Arduino issued commands to the Z-axis servo system rather than directly generating low-level motor drive signals</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Communication Flow</h3>
+              <ul class="bullet-list">
+                <li>MATLAB controller sends commands to the Arduino boards via UART</li>
+                <li>Arduino controller for X and Y communicates with two stepper motor drivers using SPI</li>
+                <li>Arduino system also returns information back to MATLAB, enabling command-and-feedback style operation</li>
+                <li>Z-axis Arduino issues commands to the servo-driven actuator</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>PCB Integration</h3>
+              <p>One important part of the system was the use of a custom PCB to replace messy point-to-point wiring.</p>
+              <p>The Arduino boards sat on top of a PCB with traces that organized power and signal routing and made the overall setup cleaner, more reliable, and easier to manage.</p>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Engineering Challenges</h3>
+              <ul class="bullet-list">
+                <li>Coordinating multiple axes</li>
+                <li>Handling UART communication between MATLAB and microcontrollers</li>
+                <li>Handling SPI communication to motor drivers</li>
+                <li>Integrating two separate controller roles within the overall architecture</li>
+                <li>Reducing hardware clutter and improving maintainability through PCB design</li>
+              </ul>
+            </div>
+            <div class="detail-section card pad">
+              <h3>Why This Project Is Important</h3>
+              <p>This project ties together several layers of engineering: embedded communication, actuator control, motion coordination, control-system integration, PCB-assisted hardware organization, and firmware and hardware working together in one real setup.</p>
+              <p>It reflects the type of work I enjoy most: embedded systems that sit between software logic and real physical machinery.</p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Image / Visual Space</h3>
+              <div class="image-placeholder">Full system setup photo or system block diagram showing MATLAB → UART → Arduino → SPI motor drivers / servo control</div>
+              <div class="spacer"></div>
+              <div class="image-grid">
+                <div class="image-placeholder">Custom PCB photo</div>
+                <div class="image-placeholder">3-axis controller or machine photo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="learning" class="page">
+      <div class="container">
+        <div class="eyebrow">Learning Timeline</div>
+        <h2 class="section-title">A step-by-step path into embedded systems</h2>
+        <p class="section-intro">I have been building my embedded knowledge step by step, focusing on low-level development using STM32 and ARM Cortex-M systems.</p>
+        <div class="card pad-lg" style="margin-bottom:22px;">
+          <p class="muted" style="margin:0;">I focus on understanding how peripherals work internally rather than only using high-level libraries. This includes understanding registers, timing, and system behavior during debugging.</p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <h3>Foundations</h3>
+            <div class="chips"><span class="chip">C programming</span><span class="chip">Pointers</span><span class="chip">Memory concepts</span><span class="chip">Structures</span><span class="chip">Microcontroller basics</span><span class="chip">Memory-mapped peripheral thinking</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>GPIO Development with LL APIs</h3>
+            <div class="chips"><span class="chip">Basic peripheral configuration</span><span class="chip">Digital input and output control</span><span class="chip">Pull-up and pull-down concepts</span><span class="chip">Floating input behavior</span><span class="chip">Hardware interaction through pins</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>UART Development with LL APIs</h3>
+            <div class="chips"><span class="chip">Transmit and receive concepts</span><span class="chip">Serial communication setup</span><span class="chip">Baud rate understanding</span><span class="chip">Terminal debugging</span><span class="chip">Clock configuration awareness</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>General Purpose Timer Development with LL APIs</h3>
+            <div class="chips"><span class="chip">Timer setup and configuration</span><span class="chip">Prescaler and auto-reload concepts</span><span class="chip">Periodic timing generation</span><span class="chip">Timer-driven behavior</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>ADC Driver Development</h3>
+            <div class="chips"><span class="chip">Analog sampling</span><span class="chip">Channel configuration</span><span class="chip">Conversion flow</span><span class="chip">Meaningful measurements from raw digital values</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>Interrupt Programming</h3>
+            <div class="chips"><span class="chip">EXTI based event handling</span><span class="chip">Asynchronous input handling</span><span class="chip">Callback-driven thinking</span><span class="chip">Interrupt response behavior</span></div>
+          </div>
+          <div class="timeline-item">
+            <h3>DMA Development (Current Focus)</h3>
+            <div class="chips"><span class="chip">Efficient peripheral-to-memory data movement</span><span class="chip">Reduced CPU involvement</span><span class="chip">Continuous streaming concepts</span><span class="chip">ADC integration for real-time acquisition</span></div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="grid-2">
+          <div class="card pad-lg">
+            <h3 style="margin-top:0;">Next Steps</h3>
+            <ul class="bullet-list">
+              <li>SPI development with LL APIs</li>
+              <li>I2C development with LL APIs</li>
+              <li>Deeper bare-metal work</li>
+              <li>RTOS concepts</li>
+              <li>More advanced driver development</li>
+              <li>Broader ARM Cortex-M understanding</li>
+            </ul>
+          </div>
+          <div class="card pad-lg">
+            <h3 style="margin-top:0;">Why this section matters</h3>
+            <p class="muted">I want this section to show not only what I have built, but how I have been building myself as an embedded developer.</p>
+            <p class="muted">My embedded learning path has been intentional. Instead of jumping directly into complex applications without understanding the basics, I have been working through peripheral development in a structured way, especially on STM32 and ARM Cortex-M based systems.</p>
+            <p class="muted">I enjoy learning each block properly, understanding what it does, how it is configured, and how it behaves during debugging.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="page">
+      <div class="container">
+        <div class="eyebrow">Contact</div>
+        <h2 class="section-title">Get in touch</h2>
+        <p class="section-intro">I am currently seeking opportunities as a Junior Embedded Firmware Engineer. If you would like to discuss opportunities, projects, or just connect, feel free to reach out.</p>
+        <div class="grid-2">
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Email</h3>
+              <p><a href="mailto:kushalsedhain@gmail.com">kushalsedhain@gmail.com</a></p>
+            </div>
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">LinkedIn</h3>
+              <p><a href="https://www.linkedin.com/in/kushalsedhai/" target="_blank">linkedin.com/in/kushalsedhai/</a></p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Availability</h3>
+              <p class="muted">Open to opportunities and relocation across Canada</p>
+            </div>
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Response Time</h3>
+              <p class="muted">I typically respond within 24 hours.</p>
+            </div>
+            <div class="card pad-lg">
+              <h3 style="margin-top:0;">Website Note</h3>
+              <p class="muted">This structure is one way to organize the portfolio. If there is a stronger way to present the information more effectively, I am open to suggestions and improvement.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Designed to reflect my journey in embedded systems, firmware development, and hands-on engineering.</p>
+      <p>Junior Embedded Firmware Engineer focused on low-level development, hardware interaction, and real-world system building.</p>
+    </div>
+  </footer>
+
+  <script>
+    const pages = document.querySelectorAll('.page');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    function showPage(id) {
+      const targetId = id && document.getElementById(id) ? id : 'home';
+      pages.forEach(page => page.classList.toggle('active', page.id === targetId));
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        link.classList.toggle('active', href === '#' + targetId);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function onHashChange() {
+      showPage(location.hash.replace('#', ''));
+    }
+
+    window.addEventListener('hashchange', onHashChange);
+    onHashChange();
+  </script>
+</body>
+</html>
